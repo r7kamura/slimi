@@ -10,34 +10,34 @@ module Slimi
       @stacks = [[:multi]]
       @indents = []
       @scanner = ::StringScanner.new(source)
-      scan_block until @scanner.eos?
+      parse_block until @scanner.eos?
       @stacks[0]
     end
 
     private
 
-    def scan_block
-      handle_indent(scan_indent)
+    def parse_block
+      handle_indent(parse_indent)
 
-      scan_line_ending ||
-        scan_tag ||
-        scan_html_comment ||
-        scan_html_conditional_comment ||
-        scan_slim_comment_block ||
-        scan_verbatim_text_block ||
-        scan_inline_html ||
-        scan_code_block ||
+      parse_line_ending ||
+        parse_tag ||
+        parse_html_comment ||
+        parse_html_conditional_comment ||
+        parse_slim_comment_block ||
+        parse_verbatim_text_block ||
+        parse_inline_html ||
+        parse_code_block ||
         raise('Syntax error.')
     end
 
     # @return [Boolean]
-    def scan_tag
-      scan_tag_inner && expect_line_ending
+    def parse_tag
+      parse_tag_inner && expect_line_ending
     end
 
     # @todo Support shortcut attributes (e.g. div.foo).
     # @return [Boolean]
-    def scan_tag_inner
+    def parse_tag_inner
       tag_name = @scanner.scan(/\p{Word}+/)
       if tag_name
         attributes = %i[html attrs]
@@ -74,7 +74,7 @@ module Slimi
     end
 
     # @return [Boolean]
-    def scan_html_comment
+    def parse_html_comment
       if @scanner.skip(%r{/!})
         text_block = parse_text_block
         text = [:slim, :text, :verbatim, text_block]
@@ -86,12 +86,12 @@ module Slimi
     end
 
     # @return [Boolean]
-    def scan_html_conditional_comment
-      scan_html_conditional_comment_inner && expect_line_ending
+    def parse_html_conditional_comment
+      parse_html_conditional_comment_inner && expect_line_ending
     end
 
     # @return [Boolean]
-    def scan_html_conditional_comment_inner
+    def parse_html_conditional_comment_inner
       if @scanner.skip(%r{/\[\s*(.*?)\s*\][ \t]*})
         block = [:multi]
         @stacks.last << [:html, :condcomment, @scanner[1], block]
@@ -103,11 +103,11 @@ module Slimi
     end
 
     # @return [Boolean]
-    def scan_slim_comment_block
+    def parse_slim_comment_block
       if @scanner.skip(%r{/.*})
         while !@scanner.eos? && (@scanner.match?(/[ \t]*$/) || peek_indent > @indents.last)
           @scanner.skip(/.*/)
-          scan_line_ending
+          parse_line_ending
         end
         true
       else
@@ -116,12 +116,12 @@ module Slimi
     end
 
     # @return [Boolean]
-    def scan_verbatim_text_block
-      scan_verbatim_text_block_inner && expect_line_ending
+    def parse_verbatim_text_block
+      parse_verbatim_text_block_inner && expect_line_ending
     end
 
     # @return [Boolean]
-    def scan_verbatim_text_block_inner
+    def parse_verbatim_text_block_inner
       if @scanner.skip(/([|']) ?/)
         with_trailing_white_space = @scanner[1] == "'"
         @stacks.last << [:slim, :text, :verbatim, parse_text_block]
@@ -133,12 +133,12 @@ module Slimi
     end
 
     # @return [Boolean]
-    def scan_inline_html
-      scan_inline_html_inner && expect_line_ending
+    def parse_inline_html
+      parse_inline_html_inner && expect_line_ending
     end
 
     # @return [Boolean]
-    def scan_inline_html_inner
+    def parse_inline_html_inner
       value = @scanner.scan(/<.*/)
       if value
         block = [:multi]
@@ -151,12 +151,12 @@ module Slimi
     end
 
     # @return [Boolean]
-    def scan_code_block
-      scan_code_block_inner && expect_line_ending
+    def parse_code_block
+      parse_code_block_inner && expect_line_ending
     end
 
     # @return [Boolean]
-    def scan_code_block_inner
+    def parse_code_block_inner
       if @scanner.skip(/-/)
         block = [:multi]
         @stacks.last << [:slim, :control, parse_broken_lines, block]
@@ -194,11 +194,11 @@ module Slimi
 
     # @raise
     def expect_line_ending
-      scan_line_ending || @scanner.eos? || raise('Expect line ending, but other character found')
+      parse_line_ending || @scanner.eos? || raise('Expect line ending, but other character found')
     end
 
     # @return [Integer] Indent level.
-    def scan_indent
+    def parse_indent
       @scanner.skip(/[ \t]*/)
       indent_from_last_match
     end
@@ -224,7 +224,7 @@ module Slimi
     end
 
     # @return [Boolean]
-    def scan_line_ending
+    def parse_line_ending
       if @scanner.skip(/\r?\n/)
         @stacks.last << [:newline]
         true
