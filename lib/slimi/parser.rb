@@ -4,6 +4,8 @@ require 'strscan'
 
 module Slimi
   class Parser
+    def initialize(*); end
+
     def call(source)
       @stacks = [[:multi]]
       @indents = []
