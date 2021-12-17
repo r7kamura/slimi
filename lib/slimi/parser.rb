@@ -29,7 +29,7 @@ module Slimi
         parse_output_block ||
         parse_doctype ||
         parse_tag ||
-        raise('Syntax error.')
+        raise('Unknown line indicator')
     end
 
     # @return [Boolean]
