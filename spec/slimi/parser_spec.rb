@@ -200,5 +200,19 @@ RSpec.describe Slimi::Parser do
         )
       end
     end
+
+    context 'with output block' do
+      let(:source) do
+        <<~SLIM
+          = 1
+        SLIM
+      end
+
+      it do
+        is_expected.to eq(
+          [:multi, [:slim, :output, true, '1', [:multi, [:newline]]]]
+        )
+      end
+    end
   end
 end

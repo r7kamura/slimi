@@ -27,6 +27,7 @@ module Slimi
         parse_verbatim_text_block ||
         parse_inline_html ||
         parse_code_block ||
+        parse_output_block ||
         raise('Syntax error.')
     end
 
@@ -38,12 +39,12 @@ module Slimi
     # @todo Support shortcut attributes (e.g. div.foo).
     # @return [Boolean]
     def parse_tag_inner
-      tag_name = @scanner.scan(/\p{Word}+/)
+      tag_name = @scanner.scan(/\p{Word}+([<>']*)/)
       if tag_name
         attributes = %i[html attrs]
-        value = @scanner.scan(/[<>']*/)
-        with_trailing_white_space = value.include?('<') || value.include?("'")
-        with_leading_white_space = value.include?('>')
+        white_space_marker = @scanner[1]
+        with_trailing_white_space = white_space_marker.include?('<') || white_space_marker.include?("'")
+        with_leading_white_space = white_space_marker.include?('>')
         tag = [:html, :tag, tag_name, attributes]
         @stacks.last << [:static, ' '] if with_leading_white_space
         @stacks.last << tag
@@ -53,13 +54,14 @@ module Slimi
           content = [:multi]
           tag << content
           @stacks << content
-        elsif @scanner.skip(/[ \t]*=(=?)(['<>])*/)
-          escaping = !@scanner[1]
-          with_trailing_white_space2 = !with_trailing_white_space && @scanner[2] && (@scanner[2].include?('<') || @scanner[2].include?("'"))
-          with_leading_white_space2 = !with_leading_white_space && @scanner[2] && @scanner[2].include?('>')
+        elsif @scanner.skip(/[ \t]*=(=?)([<>'])*/)
+          escape = @scanner[1].empty?
+          white_space_marker = @scanner[2]
+          with_trailing_white_space2 = !with_trailing_white_space && white_space_marker && (white_space_marker.include?('<') || white_space_marker.include?("'"))
+          with_leading_white_space2 = !with_leading_white_space && white_space_marker && white_space_marker.include?('>')
           block = [:multi]
           @stacks.last.insert(-2, [:static, ' ']) if with_leading_white_space2
-          tag << [:slim, :output, !escaping, parse_broken_lines, block]
+          tag << [:slim, :output, escape, parse_broken_lines, block]
           @stacks.last << [:static, ' '] if with_trailing_white_space2
           @stacks << block
         elsif @scanner.skip(%r{[ \t]*/[ \t]*})
@@ -162,6 +164,28 @@ module Slimi
         @stacks.last << [:slim, :control, parse_broken_lines, block]
         @stacks << block
         true
+      else
+        false
+      end
+    end
+
+    # @return [Boolean]
+    def parse_output_block
+      parse_output_block_inner && expect_line_ending
+    end
+
+    # @return [Boolean]
+    def parse_output_block_inner
+      if @scanner.skip(/=(=?)([<>']*)/)
+        escape = @scanner[1].empty?
+        white_space_marker = @scanner[2]
+        with_trailing_white_space = white_space_marker.include?('<') || white_space_marker.include?("'")
+        with_leading_white_space = white_space_marker.include?('>')
+        block = [:multi]
+        @stacks.last << [:static, ' '] if with_trailing_white_space
+        @stacks.last << [:slim, :output, escape, parse_broken_lines, block]
+        @stacks.last << [:static, ' '] if with_leading_white_space
+        @stacks << block
       else
         false
       end
