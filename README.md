@@ -1,6 +1,6 @@
 # Slimi
 
-Yet another template engine for [Slim](https://github.com/slim-template/slim).
+Yet another implementation for [Slim](https://github.com/slim-template/slim) template language.
 
 ## Installation
 

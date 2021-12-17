@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Ryo Nakamura']
   spec.email         = ['r7kamura@gmail.com']
 
-  spec.summary       = 'Yet another template engine for Slim.'
+  spec.summary       = 'Yet another implementation for Slim template language.'
   spec.homepage      = 'https://github.com/r7kamura/slimi'
   spec.license       = 'MIT'
   spec.required_ruby_version = '>= 2.6.0'
