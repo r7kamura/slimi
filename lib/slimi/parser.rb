@@ -30,42 +30,6 @@ module Slimi
         raise('Syntax error.')
     end
 
-    # @return [Integer] Indent level.
-    def scan_indent
-      @scanner.skip(/[ \t]*/)
-      indent_from_last_match
-    end
-
-    # @return [Integer] Indent level.
-    def peek_indent
-      @scanner.match?(/[ \t]*/)
-      indent_from_last_match
-    end
-
-    # @return [Integer]
-    def indent_from_last_match
-      @scanner.matched.chars.map do |char|
-        case char
-        when "\t"
-          4
-        when ' '
-          1
-        else
-          0
-        end
-      end.sum(0)
-    end
-
-    # @return [Boolean]
-    def scan_line_ending
-      if @scanner.skip(/\r?\n/)
-        @stacks.last << [:newline]
-        true
-      else
-        false
-      end
-    end
-
     # @return [Boolean]
     def scan_tag
       scan_tag_inner && expect_line_ending
@@ -136,41 +100,6 @@ module Slimi
       else
         false
       end
-    end
-
-    # @todo Append new_line for each empty line.
-    def parse_text_block
-      result = [:multi]
-      value = @scanner.scan(/.+/)
-      result << [:slim, :interpolate, value] if value
-
-      loop do
-        break unless @scanner.match?(/\r?\n[ \t]*/)
-
-        indent = indent_from_last_match
-        break if indent <= @indents.last
-
-        @scanner.pos += @scanner.matched_size
-        result << [:newline]
-        result << [:slim, :interpolate, @scanner.scan(/.*/)]
-      end
-
-      result
-    end
-
-    # @note Broken line means line-breaked lines, separated by trailing "," or "\".
-    # @return [String]
-    def parse_broken_lines
-      result = +''
-      @scanner.skip(/[ \t]+/)
-      result << @scanner.scan(/.*/)
-      while result.end_with?(',') || result.end_with?('\\')
-        raise 'Unexpected EOS' unless @scanner.scan(/\r?\n/)
-
-        result << "\n"
-        result << @scanner.scan(/.*/)
-      end
-      result
     end
 
     # @return [Boolean]
@@ -266,6 +195,77 @@ module Slimi
     # @raise
     def expect_line_ending
       scan_line_ending || @scanner.eos? || raise('Expect line ending, but other character found')
+    end
+
+    # @return [Integer] Indent level.
+    def scan_indent
+      @scanner.skip(/[ \t]*/)
+      indent_from_last_match
+    end
+
+    # @return [Integer] Indent level.
+    def peek_indent
+      @scanner.match?(/[ \t]*/)
+      indent_from_last_match
+    end
+
+    # @return [Integer]
+    def indent_from_last_match
+      @scanner.matched.chars.map do |char|
+        case char
+        when "\t"
+          4
+        when ' '
+          1
+        else
+          0
+        end
+      end.sum(0)
+    end
+
+    # @return [Boolean]
+    def scan_line_ending
+      if @scanner.skip(/\r?\n/)
+        @stacks.last << [:newline]
+        true
+      else
+        false
+      end
+    end
+
+    # @todo Append new_line for each empty line.
+    def parse_text_block
+      result = [:multi]
+      value = @scanner.scan(/.+/)
+      result << [:slim, :interpolate, value] if value
+
+      loop do
+        break unless @scanner.match?(/\r?\n[ \t]*/)
+
+        indent = indent_from_last_match
+        break if indent <= @indents.last
+
+        @scanner.pos += @scanner.matched_size
+        result << [:newline]
+        result << [:slim, :interpolate, @scanner.scan(/.*/)]
+      end
+
+      result
+    end
+
+    # @note Broken line means line-breaked lines, separated by trailing "," or "\".
+    # @return [String]
+    def parse_broken_lines
+      result = +''
+      @scanner.skip(/[ \t]+/)
+      result << @scanner.scan(/.*/)
+      while result.end_with?(',') || result.end_with?('\\')
+        raise 'Unexpected EOS' unless @scanner.scan(/\r?\n/)
+
+        result << "\n"
+        result << @scanner.scan(/.*/)
+      end
+      result
     end
   end
 end
