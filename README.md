@@ -1,5 +1,7 @@
 # Slimi
 
+[![test](https://github.com/r7kamura/slimi/actions/workflows/test.yml/badge.svg)](https://github.com/r7kamura/slimi/actions/workflows/test.yml)
+
 Yet another implementation for [Slim](https://github.com/slim-template/slim) template language.
 
 ## Installation
