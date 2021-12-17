@@ -3,6 +3,5 @@
 require_relative "slimi/version"
 
 module Slimi
-  class Error < StandardError; end
-  # Your code goes here...
+  autoload :Parser, 'slimi/parser'
 end
