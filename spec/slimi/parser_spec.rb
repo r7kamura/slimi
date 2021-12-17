@@ -21,7 +21,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:html, :tag, 'p', %i[html attrs], [:slim, :text, :inline, [:multi, [:slim, :interpolate, ' a']]]], [:newline]]
         )
@@ -35,7 +35,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:html, :tag, 'p', %i[html attrs], [:multi, [:newline]]]]
         )
@@ -50,7 +50,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:html, :tag, 'p', %i[html attrs], [:multi, [:newline], [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, 'a']]], [:newline]]]]
         )
@@ -64,7 +64,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:html, :tag, 'p', %i[html attrs], [:slim, :output, true, '1', [:multi, [:newline]]]]]
         )
@@ -79,7 +79,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:html, :tag, 'p', %i[html attrs], [:slim, :output, true, "[,\n]", [:multi, [:newline]]]]]
         )
@@ -93,7 +93,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:html, :comment, [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, ' a']]]], [:newline]]
         )
@@ -107,7 +107,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:html, :condcomment, 'if IE', [:multi, [:newline]]]]
         )
@@ -124,7 +124,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:newline], [:newline], [:newline], [:newline]]
         )
@@ -138,7 +138,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, 'a']]], [:newline]]
         )
@@ -152,7 +152,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, 'a']]], [:static, ' '], [:newline]]
         )
@@ -166,7 +166,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:html, :tag, 'img', %i[html attrs]], [:newline]]
         )
@@ -180,7 +180,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:multi, [:slim, :interpolate, '<hr>'], [:multi, [:newline]]]]
         )
@@ -194,7 +194,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:slim, :control, '1', [:multi, [:newline]]]]
         )
@@ -208,7 +208,7 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it do
+      it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:slim, :output, true, '1', [:multi, [:newline]]]]
         )
