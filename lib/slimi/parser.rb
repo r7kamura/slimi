@@ -26,6 +26,7 @@ module Slimi
         scan_slim_comment_block ||
         scan_verbatim_text_block ||
         scan_inline_html ||
+        scan_code_block ||
         raise('Syntax error.')
     end
 
@@ -197,6 +198,19 @@ module Slimi
       if value
         block = [:multi]
         @stacks.last << [:multi, [:slim, :interpolate, value], block]
+        @stacks << block
+        scan_line_ending
+        true
+      else
+        false
+      end
+    end
+
+    # @return [Boolean]
+    def scan_code_block
+      if @scanner.skip(/-/)
+        block = [:multi]
+        @stacks.last << [:slim, :control, parse_broken_lines, block]
         @stacks << block
         scan_line_ending
         true
