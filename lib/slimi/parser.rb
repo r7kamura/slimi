@@ -17,7 +17,7 @@ module Slimi
     private
 
     def parse_block
-      handle_indent(parse_indent)
+      parse_indent
 
       parse_line_ending ||
         parse_html_comment ||
@@ -30,6 +30,27 @@ module Slimi
         parse_doctype ||
         parse_tag ||
         raise('Unknown line indicator')
+    end
+
+    def parse_indent
+      @scanner.skip(/[ \t]*/)
+      indent = indent_from_last_match
+      @indents << indent if @indents.empty?
+
+      if indent > @indents.last
+        raise 'Unexpected indentation' unless expecting_indentation?
+
+        @indents << indent
+      else
+        @stacks.pop if expecting_indentation?
+
+        while indent < @indents.last && @indents.length > 1
+          @indents.pop
+          @stacks.pop
+        end
+
+        raise 'Malformed indentation' if indent != @indents.last
+      end
     end
 
     # @return [Boolean]
@@ -212,35 +233,9 @@ module Slimi
       @stacks.length > @indents.length
     end
 
-    # @param [Integer] indent
-    def handle_indent(indent)
-      @indents << indent if @indents.empty?
-
-      if indent > @indents.last
-        raise 'Unexpected indentation' unless expecting_indentation?
-
-        @indents << indent
-      else
-        @stacks.pop if expecting_indentation?
-
-        while indent < @indents.last && @indents.length > 1
-          @indents.pop
-          @stacks.pop
-        end
-
-        raise 'Malformed indentation' if indent != @indents.last
-      end
-    end
-
     # @raise
     def expect_line_ending
       parse_line_ending || @scanner.eos? || raise('Expect line ending, but other character found')
-    end
-
-    # @return [Integer] Indent level.
-    def parse_indent
-      @scanner.skip(/[ \t]*/)
-      indent_from_last_match
     end
 
     # @return [Integer] Indent level.
