@@ -20,7 +20,6 @@ module Slimi
       handle_indent(parse_indent)
 
       parse_line_ending ||
-        parse_tag ||
         parse_html_comment ||
         parse_html_conditional_comment ||
         parse_slim_comment_block ||
@@ -28,6 +27,8 @@ module Slimi
         parse_inline_html ||
         parse_code_block ||
         parse_output_block ||
+        parse_doctype ||
+        parse_tag ||
         raise('Syntax error.')
     end
 
@@ -186,6 +187,21 @@ module Slimi
         @stacks.last << [:slim, :output, escape, parse_broken_lines, block]
         @stacks.last << [:static, ' '] if with_leading_white_space
         @stacks << block
+      else
+        false
+      end
+    end
+
+    # @return [Boolean]
+    def parse_doctype
+      parse_doctype_inner && expect_line_ending
+    end
+
+    # @return [Boolean]
+    def parse_doctype_inner
+      if @scanner.skip(/doctype[ \t]*/)
+        @stacks.last << [:html, :doctype, @scanner.scan(/.*/).rstrip]
+        true
       else
         false
       end

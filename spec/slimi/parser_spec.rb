@@ -214,5 +214,19 @@ RSpec.describe Slimi::Parser do
         )
       end
     end
+
+    context 'with doctype' do
+      let(:source) do
+        <<~SLIM
+          doctype html
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :doctype, 'html'], [:newline]]
+        )
+      end
+    end
   end
 end
