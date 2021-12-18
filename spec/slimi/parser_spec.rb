@@ -7,7 +7,12 @@ RSpec.describe Slimi::Parser do
     end
 
     let(:parser) do
-      described_class.new
+      described_class.new(
+        shortcut: {
+          '#' => { attr: 'id' },
+          '.' => { attr: 'class' }
+        }
+      )
     end
 
     let(:source) do
@@ -225,6 +230,20 @@ RSpec.describe Slimi::Parser do
       it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:html, :doctype, 'html'], [:newline]]
+        )
+      end
+    end
+
+    context 'with shortcut attributes' do
+      let(:source) do
+        <<~SLIM
+          div.a
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:static, 'a']]], [:multi, [:newline]]]]
         )
       end
     end

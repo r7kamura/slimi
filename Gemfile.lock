@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     slimi (0.1.0)
+      temple
 
 GEM
   remote: https://rubygems.org/

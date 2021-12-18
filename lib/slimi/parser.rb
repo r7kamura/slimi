@@ -1,10 +1,28 @@
 # frozen_string_literal: true
 
 require 'strscan'
+require 'temple'
 
 module Slimi
-  class Parser
-    def initialize(*); end
+  class Parser < ::Temple::Parser
+    define_options(
+      shortcut: {
+        '#' => { attr: 'id' },
+        '.' => { attr: 'class' }
+      }
+    )
+
+    def initialize(options = {})
+      super
+      factory = Factory.new(
+        default_tag: options[:default_tag] || 'div',
+        shortcut: options[:shortcut] || {}
+      )
+      @attribute_shortcuts = factory.attribute_shortcuts
+      @tag_shortcuts = factory.tag_shortcuts
+      @attribute_shortcut_regexp = factory.attribute_shortcut_regexp
+      @tag_regexp = factory.tag_regexp
+    end
 
     def call(source)
       @stacks = [[:multi]]
@@ -61,12 +79,29 @@ module Slimi
     # @todo Support shortcut attributes (e.g. div.foo).
     # @return [Boolean]
     def parse_tag_inner
-      tag_name = @scanner.scan(/\p{Word}+([<>']*)/)
+      tag_name = @scanner.scan(@tag_regexp)
       if tag_name
         attributes = %i[html attrs]
-        white_space_marker = @scanner[1]
+
+        # Parse attribute shortcuts part.
+        # e.g. div#foo.bar
+        #         ^^^^^^^^
+        #                 `- attribute shortcut part
+        while @scanner.skip(@attribute_shortcut_regexp)
+          marker = @scanner[1]
+          attribute_value = @scanner[2]
+          attribute_names = @attribute_shortcuts[marker]
+          raise 'Illegal shortcut' unless attribute_names
+
+          attribute_names.each do |attribute_name|
+            attributes << [:html, :attr, attribute_name.to_s, [:static, attribute_value]]
+          end
+        end
+
+        white_space_marker = @scanner.scan(/[<>']*/)
         with_trailing_white_space = white_space_marker.include?('<') || white_space_marker.include?("'")
         with_leading_white_space = white_space_marker.include?('>')
+
         tag = [:html, :tag, tag_name, attributes]
         @stacks.last << [:static, ' '] if with_leading_white_space
         @stacks.last << tag
@@ -301,6 +336,56 @@ module Slimi
         result << @scanner.scan(/.*/)
       end
       result
+    end
+
+    class Factory
+      # @param [String] default_tag
+      # @param [Hash] shortcut
+      def initialize(default_tag:, shortcut:)
+        @default_tag = default_tag
+        @shortcut = shortcut
+      end
+
+      # @return [Hash] e.g. `{ "." => { "a" => "b" }}`
+      def additional_attributes
+        @additional_attributes ||= @shortcut.each_with_object({}) do |(marker, details), result|
+          result[marker] = details[:additional_attrs] if details.key?(:additional_attrs)
+        end
+      end
+
+      # @return [Hash] e.g. `{ "." => ["class"] }`
+      #                         ^^^     ^^^^^^^
+      #                           |            `- attribute name
+      #                            `- marker
+      def attribute_shortcuts
+        @attribute_shortcuts ||= @shortcut.each_with_object({}) do |(marker, details), result|
+          result[marker] = Array(details[:attr]) if details.key?(:attr)
+        end
+      end
+
+      # @return [Hash] e.g. `{ "." => "div" }`
+      #                        ^^^    ^^^^^
+      #                          |         `- tag name
+      #                           `- marker
+      def tag_shortcuts
+        @tag_shortcuts ||= @shortcut.transform_values do |details|
+          details[:tag] || @default_tag
+        end
+      end
+
+      # @return [Regexp] Pattern that matches to attribute shortcuts part.
+      def attribute_shortcut_regexp
+        markers = attribute_shortcuts.keys.sort_by { |marker| -marker.size }
+        markers_regexp = ::Regexp.union(markers)
+        %r{(#{markers_regexp}+)((?:\p{Word}|-|/\d+|:(\w|-)+)*)}
+      end
+
+      # @return [Regexp] Pattern that matches to tag header part.
+      def tag_regexp
+        markers = tag_shortcuts.keys.sort_by { |marker| -marker.size }
+        markers_regexp = ::Regexp.union(markers)
+        /#{markers_regexp}|\*(?=[^ \t]+)|(\p{Word}(?:\p{Word}|:|-)*\p{Word}|\p{Word}+)/
+      end
     end
   end
 end
