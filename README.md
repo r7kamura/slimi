@@ -4,6 +4,8 @@
 
 Yet another implementation for [Slim](https://github.com/slim-template/slim) template language.
 
+The current goal is to generate AST with detailed location information so that the embedded Ruby code in slim templates can be auto-corrected by Linter such as RuboCop.
+
 ## Installation
 
 Add this line to your application's Gemfile:
