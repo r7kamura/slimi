@@ -383,8 +383,8 @@ module Slimi
       end
 
       # @return [Hash] e.g. `{ "." => ["class"] }`
-      #                         ^^^     ^^^^^^^
-      #                           |            `- attribute name
+      #                        ^^^     ^^^^^^^
+      #                          |            `- attribute name
       #                            `- marker
       def attribute_shortcuts
         @attribute_shortcuts ||= @shortcut.each_with_object({}) do |(marker, details), result|
