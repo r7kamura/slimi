@@ -76,26 +76,12 @@ module Slimi
       parse_tag_inner && expect_line_ending
     end
 
-    # @todo Support shortcut attributes (e.g. div.foo).
     # @return [Boolean]
     def parse_tag_inner
       tag_name = parse_tag_name
       if tag_name
-        # Parse attribute shortcuts part.
-        # e.g. div#foo.bar
-        #         ^^^^^^^^
-        #                 `- attribute shortcut part
         attributes = %i[html attrs]
-        while @scanner.skip(@attribute_shortcut_regexp)
-          marker = @scanner[1]
-          attribute_value = @scanner[2]
-          attribute_names = @attribute_shortcuts[marker]
-          raise 'Illegal shortcut' unless attribute_names
-
-          attribute_names.each do |attribute_name|
-            attributes << [:html, :attr, attribute_name.to_s, [:static, attribute_value]]
-          end
-        end
+        attributes += parse_tag_attribute_shortcuts
 
         white_space_marker = @scanner.scan(/[<>']*/)
         with_trailing_white_space = white_space_marker.include?('<') || white_space_marker.include?("'")
@@ -153,6 +139,26 @@ module Slimi
         @scanner.pos += @scanner.matched_size unless @attribute_shortcuts[marker]
         @tag_shortcuts[marker]
       end
+    end
+
+    # Parse attribute shortcuts part.
+    #   e.g. div#foo.bar
+    #           ^^^^^^^^
+    #                   `- attribute shortcuts
+    # @return [Array] Found attribute s-expressions.
+    def parse_tag_attribute_shortcuts
+      result = []
+      while @scanner.skip(@attribute_shortcut_regexp)
+        marker = @scanner[1]
+        attribute_value = @scanner[2]
+        attribute_names = @attribute_shortcuts[marker]
+        raise 'Illegal shortcut' unless attribute_names
+
+        attribute_names.map do |attribute_name|
+          result << [:html, :attr, attribute_name.to_s, [:static, attribute_value]]
+        end
+      end
+      result
     end
 
     # @return [Boolean]
