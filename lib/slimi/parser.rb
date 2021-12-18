@@ -79,14 +79,31 @@ module Slimi
     # @todo Support shortcut attributes (e.g. div.foo).
     # @return [Boolean]
     def parse_tag_inner
-      tag_name = @scanner.scan(@tag_regexp)
-      if tag_name
-        attributes = %i[html attrs]
+      if @scanner.match?(@tag_regexp)
+        # Parse tag name part.
+        # e.g. div.foo
+        #      ^^^
+        #         `- tag name
+        # e.g. .foo
+        #      ^
+        #       `- tag name shortcut (not consume input in this case)
+        # e.g. ?.foo
+        #      ^
+        #       `- tag name shortcut if `?` is registered as only-tag shortcut (consume input in this case)
+        if @scanner[1]
+          tag_name = @scanner.matched
+          @scanner.pos += @scanner.matched_size
+        else
+          marker = @scanner.matched
+          tag_name = @tag_shortcuts[marker]
+          @scanner.pos += @scanner.matched_size unless @attribute_shortcuts[marker]
+        end
 
         # Parse attribute shortcuts part.
         # e.g. div#foo.bar
         #         ^^^^^^^^
         #                 `- attribute shortcut part
+        attributes = %i[html attrs]
         while @scanner.skip(@attribute_shortcut_regexp)
           marker = @scanner[1]
           attribute_value = @scanner[2]

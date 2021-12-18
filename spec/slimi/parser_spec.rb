@@ -10,7 +10,8 @@ RSpec.describe Slimi::Parser do
       described_class.new(
         shortcut: {
           '#' => { attr: 'id' },
-          '.' => { attr: 'class' }
+          '.' => { attr: 'class' },
+          '?' => { tag: 'p' } # For testing tag shortcut (not attribute shortcut).
         }
       )
     end
@@ -234,7 +235,7 @@ RSpec.describe Slimi::Parser do
       end
     end
 
-    context 'with shortcut attributes' do
+    context 'with shortcut attribute' do
       let(:source) do
         <<~SLIM
           div.a
@@ -244,6 +245,48 @@ RSpec.describe Slimi::Parser do
       it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:static, 'a']]], [:multi, [:newline]]]]
+        )
+      end
+    end
+
+    context 'with shortcut attribute without tag name' do
+      let(:source) do
+        <<~SLIM
+          .a
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:static, 'a']]], [:multi, [:newline]]]]
+        )
+      end
+    end
+
+    context 'with shortcut tag name' do
+      let(:source) do
+        <<~SLIM
+          ?
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'p', %i[html attrs], [:multi, [:newline]]]]
+        )
+      end
+    end
+
+    context 'with shortcut tag name and shortcut attribute' do
+      let(:source) do
+        <<~SLIM
+          ?.a
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'p', [:html, :attrs, [:html, :attr, 'class', [:static, 'a']]], [:multi, [:newline]]]]
         )
       end
     end
