@@ -29,7 +29,7 @@ module Slimi
         parse_output_block ||
         parse_doctype ||
         parse_tag ||
-        raise('Unknown line indicator')
+        raise(Errors::UnknownLineIndicatorError)
     end
 
     def parse_indent
@@ -38,7 +38,7 @@ module Slimi
       @indents << indent if @indents.empty?
 
       if indent > @indents.last
-        raise 'Unexpected indentation' unless expecting_indentation?
+        raise Errors::UnexpectedIndentationError unless expecting_indentation?
 
         @indents << indent
       else
@@ -49,7 +49,7 @@ module Slimi
           @stacks.pop
         end
 
-        raise 'Malformed indentation' if indent != @indents.last
+        raise Errors::MalformedIndentationError if indent != @indents.last
       end
     end
 
@@ -87,7 +87,7 @@ module Slimi
           @stacks.last << [:static, ' '] if with_trailing_white_space2
           @stacks << block
         elsif @scanner.skip(%r{[ \t]*/[ \t]*})
-          raise 'Unexpected text after closed tag' unless @scanner.match?(/\r?\n/)
+          raise Errors::UnexpectedTextAfterClosedTagError unless @scanner.match?(/\r?\n/)
         else
           tag << [:slim, :text, :inline, parse_text_block]
         end
@@ -235,7 +235,7 @@ module Slimi
 
     # @raise
     def expect_line_ending
-      parse_line_ending || @scanner.eos? || raise('Expect line ending, but other character found')
+      parse_line_ending || @scanner.eos? || raise(LineEndingNotFoundError)
     end
 
     # @return [Integer] Indent level.
@@ -295,7 +295,7 @@ module Slimi
       @scanner.skip(/[ \t]+/)
       result << @scanner.scan(/.*/)
       while result.end_with?(',') || result.end_with?('\\')
-        raise 'Unexpected EOS' unless @scanner.scan(/\r?\n/)
+        raise Errors::UnexpectedEosError unless @scanner.scan(/\r?\n/)
 
         result << "\n"
         result << @scanner.scan(/.*/)
