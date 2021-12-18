@@ -376,6 +376,10 @@ module Slimi
       end
 
       # @return [Hash] e.g. `{ "." => { "a" => "b" }}`
+      #                        ^^^      ^^^    ^^^
+      #                          |        |       `- attribute value
+      #                          |         `- attribute key
+      #                           `- marker
       def additional_attributes
         @additional_attributes ||= @shortcut.each_with_object({}) do |(marker, details), result|
           result[marker] = details[:additional_attrs] if details.key?(:additional_attrs)
@@ -385,7 +389,7 @@ module Slimi
       # @return [Hash] e.g. `{ "." => ["class"] }`
       #                        ^^^     ^^^^^^^
       #                          |            `- attribute name
-      #                            `- marker
+      #                           `- marker
       def attribute_shortcuts
         @attribute_shortcuts ||= @shortcut.each_with_object({}) do |(marker, details), result|
           result[marker] = Array(details[:attr]) if details.key?(:attr)
