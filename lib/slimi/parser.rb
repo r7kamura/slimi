@@ -21,7 +21,7 @@ module Slimi
       @attribute_shortcuts = factory.attribute_shortcuts
       @tag_shortcuts = factory.tag_shortcuts
       @attribute_shortcut_regexp = factory.attribute_shortcut_regexp
-      @tag_regexp = factory.tag_regexp
+      @tag_name_regexp = factory.tag_name_regexp
     end
 
     def call(source)
@@ -79,26 +79,8 @@ module Slimi
     # @todo Support shortcut attributes (e.g. div.foo).
     # @return [Boolean]
     def parse_tag_inner
-      if @scanner.match?(@tag_regexp)
-        # Parse tag name part.
-        # e.g. div.foo
-        #      ^^^
-        #         `- tag name
-        # e.g. .foo
-        #      ^
-        #       `- tag name shortcut (not consume input in this case)
-        # e.g. ?.foo
-        #      ^
-        #       `- tag name shortcut if `?` is registered as only-tag shortcut (consume input in this case)
-        if @scanner[1]
-          tag_name = @scanner.matched
-          @scanner.pos += @scanner.matched_size
-        else
-          marker = @scanner.matched
-          tag_name = @tag_shortcuts[marker]
-          @scanner.pos += @scanner.matched_size unless @attribute_shortcuts[marker]
-        end
-
+      tag_name = parse_tag_name
+      if tag_name
         # Parse attribute shortcuts part.
         # e.g. div#foo.bar
         #         ^^^^^^^^
@@ -146,6 +128,30 @@ module Slimi
         true
       else
         false
+      end
+    end
+
+    # Parse tag name part.
+    #   e.g. div.foo
+    #        ^^^
+    #           `- tag name
+    #   e.g. .foo
+    #        ^
+    #         `- tag name shortcut (not consume input in this case)
+    #   e.g. ?.foo
+    #        ^
+    #         `- tag name shortcut if `?` is registered as only-tag shortcut (consume input in this case)
+    # @return [String, nil] Tag name if found.
+    def parse_tag_name
+      return unless @scanner.match?(@tag_name_regexp)
+
+      if @scanner[1]
+        @scanner.pos += @scanner.matched_size
+        @scanner.matched
+      else
+        marker = @scanner.matched
+        @scanner.pos += @scanner.matched_size unless @attribute_shortcuts[marker]
+        @tag_shortcuts[marker]
       end
     end
 
@@ -398,7 +404,7 @@ module Slimi
       end
 
       # @return [Regexp] Pattern that matches to tag header part.
-      def tag_regexp
+      def tag_name_regexp
         markers = tag_shortcuts.keys.sort_by { |marker| -marker.size }
         markers_regexp = ::Regexp.union(markers)
         /#{markers_regexp}|\*(?=[^ \t]+)|(\p{Word}(?:\p{Word}|:|-)*\p{Word}|\p{Word}+)/
