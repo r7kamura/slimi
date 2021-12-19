@@ -25,12 +25,5 @@ module Slimi
         value
       end
     end
-
-    # @param [Integer] _begin
-    # @param [Integer] _end
-    # @return [Array] S-expression. (e.g. `[:slim, :interpolate, "foo"]`)
-    def on_slimi_position(_begin, _end, slim)
-      slim
-    end
   end
 end
