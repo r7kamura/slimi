@@ -90,33 +90,7 @@ module Slimi
     def parse_tag_inner
       tag_name = parse_tag_name
       if tag_name
-        attributes = %i[html attrs]
-        attributes += parse_tag_attribute_shortcuts
-
-        if @scanner.scan(@attribute_delimiter_regexp)
-          attribute_delimiter_opening = @scanner[1]
-          attribute_delimiter_closing = @attribute_delimiters[attribute_delimiter_opening]
-          attribute_delimiter_closing_regexp = ::Regexp.escape(attribute_delimiter_closing)
-          boolean_attribute_regexp = /#{@attribute_name_regexp}(?=(?:[ \t]|#{attribute_delimiter_closing_regexp}|$))/
-          attribute_delimiter_closing_part_regexp = /[ \t]*#{attribute_delimiter_closing_regexp}/
-        end
-
-        loop do
-          if @scanner.skip(@quoted_attribute_regexp)
-            attribute_name = @scanner[1]
-            escape = @scanner[2].empty?
-            quote = @scanner[3]
-            attributes << [:html, :attr, attribute_name, [:escape, escape, [:slim, :interpolate, parse_quoted_attribute_value(quote)]]]
-          elsif !attribute_delimiter_closing_part_regexp
-            break
-          elsif @scanner.skip(boolean_attribute_regexp)
-            attributes << [:html, :attr, @scanner[1], [:multi]]
-          elsif @scanner.skip(attribute_delimiter_closing_part_regexp) # rubocop:disable Lint/DuplicateBranch
-            break
-          else
-            raise ::NotImplementedError
-          end
-        end
+        attributes = parse_attributes
 
         white_space_marker = @scanner.scan(/[<>']*/)
         with_trailing_white_space = white_space_marker.include?('<') || white_space_marker.include?("'")
@@ -217,6 +191,43 @@ module Slimi
         result << @scanner.scan(/[^{}#{quote}]*/)
       end
       result
+    end
+
+    # Parse attributes part.
+    #   e.g. input type="text" value="a" autofocus
+    #              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #                                             `- attributes part
+    # @return [Array] S-expression of attributes.
+    def parse_attributes
+      attributes = %i[html attrs]
+      attributes += parse_tag_attribute_shortcuts
+
+      if @scanner.scan(@attribute_delimiter_regexp)
+        attribute_delimiter_opening = @scanner[1]
+        attribute_delimiter_closing = @attribute_delimiters[attribute_delimiter_opening]
+        attribute_delimiter_closing_regexp = ::Regexp.escape(attribute_delimiter_closing)
+        boolean_attribute_regexp = /#{@attribute_name_regexp}(?=(?:[ \t]|#{attribute_delimiter_closing_regexp}|$))/
+        attribute_delimiter_closing_part_regexp = /[ \t]*#{attribute_delimiter_closing_regexp}/
+      end
+
+      loop do
+        if @scanner.skip(@quoted_attribute_regexp)
+          attribute_name = @scanner[1]
+          escape = @scanner[2].empty?
+          quote = @scanner[3]
+          attributes << [:html, :attr, attribute_name, [:escape, escape, [:slim, :interpolate, parse_quoted_attribute_value(quote)]]]
+        elsif !attribute_delimiter_closing_part_regexp
+          break
+        elsif @scanner.skip(boolean_attribute_regexp)
+          attributes << [:html, :attr, @scanner[1], [:multi]]
+        elsif @scanner.skip(attribute_delimiter_closing_part_regexp) # rubocop:disable Lint/DuplicateBranch
+          break
+        else
+          raise ::NotImplementedError
+        end
+      end
+
+      attributes
     end
 
     # @return [Boolean]
