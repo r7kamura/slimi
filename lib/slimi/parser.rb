@@ -15,12 +15,15 @@ module Slimi
     def initialize(options = {})
       super
       factory = Factory.new(
+        attribute_delimiters: options[:attribute_delimiters] || {},
         default_tag: options[:default_tag] || 'div',
         shortcut: options[:shortcut] || {}
       )
       @attribute_shortcuts = factory.attribute_shortcuts
       @tag_shortcuts = factory.tag_shortcuts
       @attribute_shortcut_regexp = factory.attribute_shortcut_regexp
+      @attribute_delimiter_regexp = factory.attribute_delimiter_regexp
+      @quoted_attribute_regexp = factory.quoted_attribute_regexp
       @tag_name_regexp = factory.tag_name_regexp
     end
 
@@ -82,6 +85,22 @@ module Slimi
       if tag_name
         attributes = %i[html attrs]
         attributes += parse_tag_attribute_shortcuts
+
+        # if @scanner.scan(@attribute_delimiter_regexp)
+        #   attribute_delimiter_closing = @scanner[1]
+        #   attribute_delimiter_closing_regexp = ::Regexp.escape(attribute_delimiter_closing)
+        #   boolean_attribute_regexp = /#{@attribute_name_regexp}(?=(?:[ \t]|#{attribute_delimiter_closing_regexp}|$))/
+        #   attribute_delimiter_closing_part_regexp = /[ \t]*#{attribute_delimiter_closing_regexp}/
+        # end
+
+        loop do
+          break unless @scanner.skip(@quoted_attribute_regexp)
+
+          attribute_name = @scanner[1]
+          escape = @scanner[2].empty?
+          quote = @scanner[3]
+          attributes << [:html, :attr, attribute_name, [:escape, escape, [:slim, :interpolate, parse_quoted_attribute_value(quote)]]]
+        end
 
         white_space_marker = @scanner.scan(/[<>']*/)
         with_trailing_white_space = white_space_marker.include?('<') || white_space_marker.include?("'")
@@ -157,6 +176,29 @@ module Slimi
         attribute_names.map do |attribute_name|
           result << [:html, :attr, attribute_name.to_s, [:static, attribute_value]]
         end
+      end
+      result
+    end
+
+    # Parse quoted attribute value part.
+    #   e.g. input type="text"
+    #                   ^^^^^^
+    #                         `- quoted attribute value
+    # @note Skip closing quote in {}.
+    # @param [String] quote `"'"` or `'"'`.
+    # @return [String] Attribute value (e.g. `"text"``).
+    def parse_quoted_attribute_value(quote)
+      result = +''
+      count = 0
+      loop do
+        break if @scanner.skip(/#{quote}/) && count.zero?
+
+        if @scanner.skip(/\{/)
+          count += 1
+        elsif @scanner.skip(/\}/)
+          count -= 1
+        end
+        result << @scanner.scan(/[^{}#{quote}]*/)
       end
       result
     end
@@ -367,10 +409,13 @@ module Slimi
       result
     end
 
+    # Convert human-friendly options into machine-friendly objects.
     class Factory
+      # @param [Hash] attribute_delimiters
       # @param [String] default_tag
       # @param [Hash] shortcut
-      def initialize(default_tag:, shortcut:)
+      def initialize(attribute_delimiters:, default_tag:, shortcut:)
+        @attribute_delimiters = attribute_delimiters
         @default_tag = default_tag
         @shortcut = shortcut
       end
@@ -406,11 +451,27 @@ module Slimi
         end
       end
 
+      # @return [Regexp] Pattern that matches to attribute delimiter.
+      def attribute_delimiter_regexp
+        delimiters_regexp = ::Regexp.union(@attribute_delimiters.keys)
+        /[ \t]*(#{delimiters_regexp})/
+      end
+
+      # @return [Regexp]
+      def attribute_name_regexp
+        @attribute_name_regexp ||= %r{[ \t]*([^\0 \t"'<>/=]+)}
+      end
+
       # @return [Regexp] Pattern that matches to attribute shortcuts part.
       def attribute_shortcut_regexp
         markers = attribute_shortcuts.keys.sort_by { |marker| -marker.size }
         markers_regexp = ::Regexp.union(markers)
         %r{(#{markers_regexp}+)((?:\p{Word}|-|/\d+|:(\w|-)+)*)}
+      end
+
+      # @return [Regexp]
+      def quoted_attribute_regexp
+        /#{attribute_name_regexp}[ \t]*=(=?)[ \t]*("|')/
       end
 
       # @return [Regexp] Pattern that matches to tag header part.

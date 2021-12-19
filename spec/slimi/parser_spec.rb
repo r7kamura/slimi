@@ -290,5 +290,19 @@ RSpec.describe Slimi::Parser do
         )
       end
     end
+
+    context 'with shortcut tag name and shortcut attribute' do
+      let(:source) do
+        <<~SLIM
+          a href="http://example.com/"
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'a', [:html, :attrs, [:html, :attr, 'href', [:escape, true, [:slim, :interpolate, 'http://example.com/']]]], [:multi, [:newline]]]]
+        )
+      end
+    end
   end
 end
