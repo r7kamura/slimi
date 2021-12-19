@@ -6,6 +6,11 @@ require 'temple'
 module Slimi
   class Parser < ::Temple::Parser
     define_options(
+      attr_list_delims: {
+        '(' => ')',
+        '[' => ']',
+        '{' => '}'
+      },
       shortcut: {
         '#' => { attr: 'id' },
         '.' => { attr: 'class' }
@@ -15,16 +20,18 @@ module Slimi
     def initialize(options = {})
       super
       factory = Factory.new(
-        attribute_delimiters: options[:attribute_delimiters] || {},
+        attribute_delimiters: options[:attr_list_delims] || {},
         default_tag: options[:default_tag] || 'div',
         shortcut: options[:shortcut] || {}
       )
+      @attribute_delimiters = factory.attribute_delimiters
       @attribute_shortcuts = factory.attribute_shortcuts
       @tag_shortcuts = factory.tag_shortcuts
       @attribute_shortcut_regexp = factory.attribute_shortcut_regexp
       @attribute_delimiter_regexp = factory.attribute_delimiter_regexp
       @quoted_attribute_regexp = factory.quoted_attribute_regexp
       @tag_name_regexp = factory.tag_name_regexp
+      @attribute_name_regexp = factory.attribute_name_regexp
     end
 
     def call(source)
@@ -86,20 +93,29 @@ module Slimi
         attributes = %i[html attrs]
         attributes += parse_tag_attribute_shortcuts
 
-        # if @scanner.scan(@attribute_delimiter_regexp)
-        #   attribute_delimiter_closing = @scanner[1]
-        #   attribute_delimiter_closing_regexp = ::Regexp.escape(attribute_delimiter_closing)
-        #   boolean_attribute_regexp = /#{@attribute_name_regexp}(?=(?:[ \t]|#{attribute_delimiter_closing_regexp}|$))/
-        #   attribute_delimiter_closing_part_regexp = /[ \t]*#{attribute_delimiter_closing_regexp}/
-        # end
+        if @scanner.scan(@attribute_delimiter_regexp)
+          attribute_delimiter_opening = @scanner[1]
+          attribute_delimiter_closing = @attribute_delimiters[attribute_delimiter_opening]
+          attribute_delimiter_closing_regexp = ::Regexp.escape(attribute_delimiter_closing)
+          boolean_attribute_regexp = /#{@attribute_name_regexp}(?=(?:[ \t]|#{attribute_delimiter_closing_regexp}|$))/
+          attribute_delimiter_closing_part_regexp = /[ \t]*#{attribute_delimiter_closing_regexp}/
+        end
 
         loop do
-          break unless @scanner.skip(@quoted_attribute_regexp)
-
-          attribute_name = @scanner[1]
-          escape = @scanner[2].empty?
-          quote = @scanner[3]
-          attributes << [:html, :attr, attribute_name, [:escape, escape, [:slim, :interpolate, parse_quoted_attribute_value(quote)]]]
+          if @scanner.skip(@quoted_attribute_regexp)
+            attribute_name = @scanner[1]
+            escape = @scanner[2].empty?
+            quote = @scanner[3]
+            attributes << [:html, :attr, attribute_name, [:escape, escape, [:slim, :interpolate, parse_quoted_attribute_value(quote)]]]
+          elsif !attribute_delimiter_closing_part_regexp
+            break
+          elsif @scanner.skip(boolean_attribute_regexp)
+            attributes << [:html, :attr, @scanner[1], [:multi]]
+          elsif @scanner.skip(attribute_delimiter_closing_part_regexp) # rubocop:disable Lint/DuplicateBranch
+            break
+          else
+            raise ::NotImplementedError
+          end
         end
 
         white_space_marker = @scanner.scan(/[<>']*/)
@@ -411,6 +427,9 @@ module Slimi
 
     # Convert human-friendly options into machine-friendly objects.
     class Factory
+      # @return [Hash]
+      attr_reader :attribute_delimiters
+
       # @param [Hash] attribute_delimiters
       # @param [String] default_tag
       # @param [Hash] shortcut
@@ -459,7 +478,10 @@ module Slimi
 
       # @return [Regexp]
       def attribute_name_regexp
-        @attribute_name_regexp ||= %r{[ \t]*([^\0 \t"'<>/=]+)}
+        @attribute_name_regexp ||= begin
+          characters = ::Regexp.escape(@attribute_delimiters.flatten.uniq.join)
+          %r{[ \t]*([^\0 \t\r\n"'<>/=#{characters}]+)}
+        end
       end
 
       # @return [Regexp] Pattern that matches to attribute shortcuts part.
