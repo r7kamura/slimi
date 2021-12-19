@@ -27,6 +27,7 @@ RSpec.describe Slimi do
       )
 
       use Slimi::Parser
+      use Slimi::RemovePositionFilter
 
       use Slim::Embedded
       use Slim::Interpolation

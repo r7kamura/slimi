@@ -12,15 +12,25 @@ RSpec.describe Slimi::RemovePositionFilter do
 
     context 'with :slimi :position node' do
       let(:node) do
-        [:slimi, :position, 0, 1, inner_node]
-      end
-
-      let(:inner_node) do
-        [:slim, :interpolate, '1']
+        [:multi, [:slimi, :position, 0, 1, [:slim, :interpolate, '1']]]
       end
 
       it 'converts :slimi :position node into inner :slim node' do
-        is_expected.to eq(inner_node)
+        is_expected.to eq(
+          [:multi, [:slim, :interpolate, '1']]
+        )
+      end
+    end
+
+    context 'with complex node' do
+      let(:node) do
+        [:multi, [:html, :tag, 'p', %i[html attrs], [:slimi, :position, 1, 3, [:slim, :text, :inline, [:multi, [:slimi, :position, 3, 3, [:slim, :interpolate, ' a']]]]]], [:newline]]
+      end
+
+      it 'converts :slimi :position node into inner :slim node' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'p', %i[html attrs], [:slim, :text, :inline, [:multi, [:slim, :interpolate, ' a']]]], [:newline]]
+        )
       end
     end
   end

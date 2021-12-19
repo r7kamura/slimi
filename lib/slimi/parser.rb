@@ -112,12 +112,14 @@ module Slimi
           with_leading_white_space2 = !with_leading_white_space && white_space_marker && white_space_marker.include?('>')
           block = [:multi]
           @stacks.last.insert(-2, [:static, ' ']) if with_leading_white_space2
-          tag << [:slim, :output, escape, parse_broken_lines, block]
+          @scanner.skip(/[ \t]+/)
+          tag << with_position { [:slim, :output, escape, parse_broken_lines, block] }
           @stacks.last << [:static, ' '] if with_trailing_white_space2
           @stacks << block
         elsif @scanner.skip(%r{[ \t]*/[ \t]*})
           raise Errors::UnexpectedTextAfterClosedTagError unless @scanner.match?(/\r?\n/)
         else
+          @scanner.skip(/[ \t]+/)
           tag << [:slim, :text, :inline, parse_text_block]
         end
         true
@@ -176,21 +178,27 @@ module Slimi
     #                         `- quoted attribute value
     # @note Skip closing quote in {}.
     # @param [String] quote `"'"` or `'"'`.
-    # @return [String] Attribute value (e.g. `"text"``).
+    # @return [Array] S-expression.
     def parse_quoted_attribute_value(quote)
-      result = +''
+      begin_ = @scanner.charpos
+      end_ = nil
+      value = +''
       count = 0
       loop do
-        break if @scanner.skip(/#{quote}/) && count.zero?
+        if @scanner.match?(/#{quote}/) && count.zero?
+          end_ = @scanner.charpos
+          @scanner.pos += @scanner.matched_size
+          break
+        end
 
         if @scanner.skip(/\{/)
           count += 1
         elsif @scanner.skip(/\}/)
           count -= 1
         end
-        result << @scanner.scan(/[^{}#{quote}]*/)
+        value << @scanner.scan(/[^{}#{quote}]*/)
       end
-      result
+      [:slimi, :position, begin_, end_, [:slim, :interpolate, value]]
     end
 
     # Parse attributes part.
@@ -215,7 +223,7 @@ module Slimi
           attribute_name = @scanner[1]
           escape = @scanner[2].empty?
           quote = @scanner[3]
-          attributes << [:html, :attr, attribute_name, [:escape, escape, [:slim, :interpolate, parse_quoted_attribute_value(quote)]]]
+          attributes << [:html, :attr, attribute_name, [:escape, escape, parse_quoted_attribute_value(quote)]]
         elsif !attribute_delimiter_closing_part_regexp
           break
         elsif @scanner.skip(boolean_attribute_regexp)
@@ -296,10 +304,13 @@ module Slimi
 
     # @return [Boolean]
     def parse_inline_html_inner
-      value = @scanner.scan(/<.*/)
-      if value
+      if @scanner.match?(/<.*/)
+        begin_ = @scanner.charpos
+        value = @scanner.matched
+        @scanner.pos += @scanner.matched_size
+        end_ = @scanner.charpos
         block = [:multi]
-        @stacks.last << [:multi, [:slim, :interpolate, value], block]
+        @stacks.last << [:multi, [:slimi, :position, begin_, end_, [:slim, :interpolate, value]], block]
         @stacks << block
         true
       else
@@ -316,7 +327,8 @@ module Slimi
     def parse_code_block_inner
       if @scanner.skip(/-/)
         block = [:multi]
-        @stacks.last << [:slim, :control, parse_broken_lines, block]
+        @scanner.skip(/[ \t]+/)
+        @stacks.last << with_position { [:slim, :control, parse_broken_lines, block] }
         @stacks << block
         true
       else
@@ -338,7 +350,8 @@ module Slimi
         with_leading_white_space = white_space_marker.include?('>')
         block = [:multi]
         @stacks.last << [:static, ' '] if with_trailing_white_space
-        @stacks.last << [:slim, :output, escape, parse_broken_lines, block]
+        @scanner.skip(/[ \t]+/)
+        @stacks.last << with_position { [:slim, :output, escape, parse_broken_lines, block] }
         @stacks.last << [:static, ' '] if with_leading_white_space
         @stacks << block
       else
@@ -404,8 +417,9 @@ module Slimi
     # @todo Append new_line for each empty line.
     def parse_text_block
       result = [:multi]
-      value = @scanner.scan(/.+/)
-      result << [:slim, :interpolate, value] if value
+
+      interpolate = parse_interpolate_line
+      result << interpolate if interpolate
 
       loop do
         break unless @scanner.match?(/\r?\n[ \t]*/)
@@ -415,17 +429,27 @@ module Slimi
 
         @scanner.pos += @scanner.matched_size
         result << [:newline]
-        result << [:slim, :interpolate, @scanner.scan(/.*/)]
+        result << parse_interpolate_line
       end
 
       result
+    end
+
+    # @return [Array, nil] S-expression if found.
+    def parse_interpolate_line
+      return unless @scanner.match?(/.+/)
+
+      begin_ = @scanner.charpos
+      value = @scanner.matched
+      @scanner.pos += @scanner.matched_size
+      end_ = @scanner.charpos
+      [:slimi, :position, begin_, end_, [:slim, :interpolate, value]]
     end
 
     # @note Broken line means line-breaked lines, separated by trailing "," or "\".
     # @return [String]
     def parse_broken_lines
       result = +''
-      @scanner.skip(/[ \t]+/)
       result << @scanner.scan(/.*/)
       while result.end_with?(',') || result.end_with?('\\')
         raise Errors::UnexpectedEosError unless @scanner.scan(/\r?\n/)
@@ -434,6 +458,14 @@ module Slimi
         result << @scanner.scan(/.*/)
       end
       result
+    end
+
+    # Wrap the result s-expression of given block with slimi-position s-expression.
+    def with_position(&block)
+      begin_ = @scanner.charpos
+      inner = block.call
+      end_ = @scanner.charpos
+      [:slimi, :position, begin_, end_, inner]
     end
 
     # Convert human-friendly options into machine-friendly objects.
