@@ -27,10 +27,10 @@ RSpec.describe Slimi do
       )
 
       use Slimi::Parser
-      use Slimi::RemovePositionFilter
+      use Slimi::Filters::Unposition
 
       use Slim::Embedded
-      use Slimi::Interpolation
+      use Slimi::Filters::Interpolation
       use Slim::Splat::Filter
       use Slim::DoInserter
       use Slim::EndInserter

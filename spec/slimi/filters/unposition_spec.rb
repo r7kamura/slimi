@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Slimi::RemovePositionFilter do
+RSpec.describe Slimi::Filters::Unposition do
   describe '#call' do
     subject do
       filter.call(node)
