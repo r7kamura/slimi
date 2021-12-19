@@ -198,7 +198,7 @@ module Slimi
         end
         value << @scanner.scan(/[^{}#{quote}]*/)
       end
-      [:slimi, :position, begin_, end_, [:slim, :interpolate, value]]
+      [:slimi, :interpolate, begin_, end_, value]
     end
 
     # Parse attributes part.
@@ -310,7 +310,7 @@ module Slimi
         @scanner.pos += @scanner.matched_size
         end_ = @scanner.charpos
         block = [:multi]
-        @stacks.last << [:multi, [:slimi, :position, begin_, end_, [:slim, :interpolate, value]], block]
+        @stacks.last << [:multi, [:slimi, :interpolate, begin_, end_, value], block]
         @stacks << block
         true
       else
@@ -443,7 +443,7 @@ module Slimi
       value = @scanner.matched
       @scanner.pos += @scanner.matched_size
       end_ = @scanner.charpos
-      [:slimi, :position, begin_, end_, [:slim, :interpolate, value]]
+      [:slimi, :interpolate, begin_, end_, value]
     end
 
     # @note Broken line means line-breaked lines, separated by trailing "," or "\".

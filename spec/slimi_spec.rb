@@ -30,7 +30,7 @@ RSpec.describe Slimi do
       use Slimi::RemovePositionFilter
 
       use Slim::Embedded
-      use Slim::Interpolation
+      use Slimi::Interpolation
       use Slim::Splat::Filter
       use Slim::DoInserter
       use Slim::EndInserter
