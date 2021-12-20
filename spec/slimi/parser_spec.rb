@@ -323,5 +323,19 @@ RSpec.describe Slimi::Parser do
         )
       end
     end
+
+    context 'with interpolation' do
+      let(:source) do
+        <<~'SLIM'
+          | #{a}
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:slim, :text, :verbatim, [:multi, [:slimi, :interpolate, 2, 6, '#{a}']]], [:newline]]
+        )
+      end
+    end
   end
 end

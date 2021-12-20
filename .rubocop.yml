@@ -6,6 +6,9 @@ AllCops:
 Layout/LineLength:
   Enabled: false
 
+Lint/InterpolationCheck:
+  Enabled: false
+
 Metrics:
   Enabled: false
 
