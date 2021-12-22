@@ -5,6 +5,7 @@
 ### Added
 
 - Support embedded template.
+- Show useful message at syntax error.
 
 ## 0.1.1 - 2021-12-21
 

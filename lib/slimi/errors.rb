@@ -5,25 +5,53 @@ module Slimi
     class BaseError < StandardError
     end
 
-    class ParserError < BaseError
+    class SlimSyntaxError < BaseError
+      # @param [Integer] column
+      # @param [String] file_path
+      # @param [String] line
+      # @param [Integer] line_number
+      def initialize(column:, file_path:, line:, line_number:)
+        super()
+        @column = column
+        @file_path = file_path
+        @line = line
+        @line_number = line_number
+      end
+
+      # @note Override.
+      # @return [String]
+      def to_s
+        <<~TEXT
+          #{error_type} at #{@file_path}:#{@line_number}:#{@column}
+          #{@line}
+          #{' ' * (@column - 1)}^
+        TEXT
+      end
+
+      private
+
+      # @return [String]
+      def error_type
+        self.class.to_s.split('::').last
+      end
     end
 
-    class LineEndingNotFoundError < ParserError
+    class LineEndingNotFoundError < SlimSyntaxError
     end
 
-    class MalformedIndentationError < ParserError
+    class MalformedIndentationError < SlimSyntaxError
     end
 
-    class UnexpectedEosError < ParserError
+    class UnexpectedEosError < SlimSyntaxError
     end
 
-    class UnexpectedIndentationError < ParserError
+    class UnexpectedIndentationError < SlimSyntaxError
     end
 
-    class UnexpectedTextAfterClosedTagError < ParserError
+    class UnexpectedTextAfterClosedTagError < SlimSyntaxError
     end
 
-    class UnknownLineIndicator < ParserError
+    class UnknownLineIndicator < SlimSyntaxError
     end
   end
 end

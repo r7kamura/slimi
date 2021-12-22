@@ -68,7 +68,7 @@ module Slimi
       @indents << indent if @indents.empty?
 
       if indent > @indents.last
-        raise Errors::UnexpectedIndentationError unless expecting_indentation?
+        syntax_error!(Errors::UnexpectedIndentationError) unless expecting_indentation?
 
         @indents << indent
       else
@@ -79,7 +79,7 @@ module Slimi
           @stacks.pop
         end
 
-        raise Errors::MalformedIndentationError if indent != @indents.last
+        syntax_error!(Errors::MalformedIndentationError) if indent != @indents.last
       end
     end
 
@@ -131,7 +131,7 @@ module Slimi
           @stacks.last << [:static, ' '] if with_trailing_white_space2
           @stacks << block
         elsif @scanner.skip(%r{[ \t]*/[ \t]*})
-          raise Errors::UnexpectedTextAfterClosedTagError unless @scanner.match?(/\r?\n/)
+          syntax_error!(Errors::UnexpectedTextAfterClosedTagError) unless @scanner.match?(/\r?\n/)
         else
           @scanner.skip(/[ \t]+/)
           tag << [:slim, :text, :inline, parse_text_block]
@@ -466,7 +466,7 @@ module Slimi
       result = +''
       result << @scanner.scan(/.*/)
       while result.end_with?(',') || result.end_with?('\\')
-        raise Errors::UnexpectedEosError unless @scanner.scan(/\r?\n/)
+        syntax_error!(Errors::UnexpectedEosError) unless @scanner.scan(/\r?\n/)
 
         result << "\n"
         result << @scanner.scan(/.*/)
@@ -480,6 +480,18 @@ module Slimi
       inner = block.call
       end_ = @scanner.charpos
       [:slimi, :position, begin_, end_, inner]
+    end
+
+    # @param [Class] syntax_error_class A child class of Slimi::Errors::SlimSyntaxError.
+    # @raise [Slimi::Errors::SlimSyntaxError]
+    def syntax_error!(syntax_error_class)
+      range = Range.new(index: @scanner.charpos, source: @scanner.string)
+      raise syntax_error_class.new(
+        column: range.column,
+        file_path: '(__TEMPLATE__)',
+        line: range.line,
+        line_number: range.line_number
+      )
     end
 
     # Convert human-friendly options into machine-friendly objects.
