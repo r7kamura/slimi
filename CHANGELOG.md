@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Support embedded template.
+
 ## 0.1.1 - 2021-12-21
 
 ### Fixed

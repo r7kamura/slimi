@@ -32,6 +32,7 @@ module Slimi
       @quoted_attribute_regexp = factory.quoted_attribute_regexp
       @tag_name_regexp = factory.tag_name_regexp
       @attribute_name_regexp = factory.attribute_name_regexp
+      @embedded_template_regexp = factory.embedded_template_regexp
     end
 
     def call(source)
@@ -55,6 +56,7 @@ module Slimi
         parse_inline_html ||
         parse_code_block ||
         parse_output_block ||
+        parse_embedded_template ||
         parse_doctype ||
         parse_tag ||
         raise(Errors::UnknownLineIndicatorError)
@@ -79,6 +81,14 @@ module Slimi
 
         raise Errors::MalformedIndentationError if indent != @indents.last
       end
+    end
+
+    def parse_embedded_template
+      return unless @scanner.skip(@embedded_template_regexp)
+
+      embedded_template_engine_name = @scanner[1]
+      attributes = parse_attributes
+      @stacks.last << [:slim, :embedded, embedded_template_engine_name, parse_text_block, attributes]
     end
 
     # @return [Boolean]
@@ -470,6 +480,19 @@ module Slimi
 
     # Convert human-friendly options into machine-friendly objects.
     class Factory
+      EMBEDDED_TEMPLAE_ENGINE_NAMES = %w[
+        coffee
+        css
+        javascript
+        less
+        markdown
+        rdoc
+        ruby
+        sass
+        scss
+        textile
+      ].freeze
+
       # @return [Hash]
       attr_reader :attribute_delimiters
 
@@ -532,6 +555,11 @@ module Slimi
         markers = attribute_shortcuts.keys.sort_by { |marker| -marker.size }
         markers_regexp = ::Regexp.union(markers)
         %r{(#{markers_regexp}+)((?:\p{Word}|-|/\d+|:(\w|-)+)*)}
+      end
+
+      # @return [Regexp]
+      def embedded_template_regexp
+        /(#{::Regexp.union(EMBEDDED_TEMPLAE_ENGINE_NAMES)})(?:[ \t]*(?:(.*)))?:([ \t]*)/
       end
 
       # @return [Regexp]
