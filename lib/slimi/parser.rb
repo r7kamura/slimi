@@ -83,6 +83,10 @@ module Slimi
       end
     end
 
+    # Parse embedded template lines.
+    #   e.g.
+    #     ruby:
+    #       a = b + c
     def parse_embedded_template
       return unless @scanner.skip(@embedded_template_regexp)
 
