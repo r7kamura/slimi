@@ -337,5 +337,20 @@ RSpec.describe Slimi::Parser do
         )
       end
     end
+
+    context 'with embedded template' do
+      let(:source) do
+        <<~'SLIM'
+          ruby:
+            1
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:slim, :embedded, 'ruby', [:multi, [:newline], [:slimi, :interpolate, 8, 9, '1']], %i[html attrs]], [:newline]]
+        )
+      end
+    end
   end
 end
