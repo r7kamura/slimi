@@ -46,10 +46,11 @@ module Slimi
     private
 
     def parse_block
+      return if parse_blank_line
+
       parse_indent
 
-      parse_line_ending ||
-        parse_html_comment ||
+      parse_html_comment ||
         parse_html_conditional_comment ||
         parse_slim_comment_block ||
         parse_verbatim_text_block ||
@@ -60,6 +61,17 @@ module Slimi
         parse_doctype ||
         parse_tag ||
         raise(Errors::UnknownLineIndicatorError)
+    end
+
+    # Parse blank line.
+    # @return [Boolean] True if it could parse a blank line.
+    def parse_blank_line
+      if @scanner.skip(/[ \t]*$/)
+        parse_line_ending
+        true
+      else
+        false
+      end
     end
 
     def parse_indent

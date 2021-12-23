@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Fix bug about blank line handling.
+
 ## 0.2.0 - 2021-12-23
 
 ### Added
