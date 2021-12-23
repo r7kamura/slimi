@@ -13,6 +13,11 @@ RSpec.describe Slimi::Parser do
           '[' => ']',
           '{' => '}'
         },
+        code_attr_delims: {
+          '(' => ')',
+          '[' => ']',
+          '{' => '}'
+        },
         shortcut: {
           '#' => { attr: 'id' },
           '.' => { attr: 'class' },
@@ -236,6 +241,20 @@ RSpec.describe Slimi::Parser do
       it 'returns expected s-expression' do
         is_expected.to eq(
           [:multi, [:html, :doctype, 'html'], [:newline]]
+        )
+      end
+    end
+
+    context 'with unquoted attribute' do
+      let(:source) do
+        <<~'SLIM'
+          div class=a
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:slim, :attrvalue, true, 'a']]], [:multi, [:newline]]]]
         )
       end
     end

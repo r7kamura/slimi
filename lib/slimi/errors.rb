@@ -36,10 +36,16 @@ module Slimi
       end
     end
 
+    class InvalidEmptyAttributeError < SlimSyntaxError
+    end
+
     class LineEndingNotFoundError < SlimSyntaxError
     end
 
     class MalformedIndentationError < SlimSyntaxError
+    end
+
+    class RubyAttributeClosingDelimiterNotFoundError < SlimSyntaxError
     end
 
     class UnexpectedEosError < SlimSyntaxError
