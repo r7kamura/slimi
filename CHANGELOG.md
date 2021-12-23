@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Support unquoted attributes.
+
 ### Fixed
 
 - Fix bug about blank line handling.

@@ -11,6 +11,11 @@ module Slimi
         '[' => ']',
         '{' => '}'
       },
+      code_attr_delims: {
+        '(' => ')',
+        '[' => ']',
+        '{' => '}'
+      },
       shortcut: {
         '#' => { attr: 'id' },
         '.' => { attr: 'class' }
@@ -22,6 +27,7 @@ module Slimi
       factory = Factory.new(
         attribute_delimiters: options[:attr_list_delims] || {},
         default_tag: options[:default_tag] || 'div',
+        ruby_attribute_delimiters: options[:code_attr_delims] || {},
         shortcut: options[:shortcut] || {}
       )
       @attribute_delimiters = factory.attribute_delimiters
@@ -32,6 +38,9 @@ module Slimi
       @quoted_attribute_regexp = factory.quoted_attribute_regexp
       @tag_name_regexp = factory.tag_name_regexp
       @attribute_name_regexp = factory.attribute_name_regexp
+      @ruby_attribute_regexp = factory.ruby_attribute_regexp
+      @ruby_attribute_delimiter_regexp = factory.ruby_attribute_delimiter_regexp
+      @ruby_attribute_delimiters = factory.ruby_attribute_delimiters
       @embedded_template_regexp = factory.embedded_template_regexp
     end
 
@@ -244,12 +253,19 @@ module Slimi
         attribute_delimiter_closing_part_regexp = /[ \t]*#{attribute_delimiter_closing_regexp}/
       end
 
+      # TODO: Support splat attributes.
       loop do
         if @scanner.skip(@quoted_attribute_regexp)
           attribute_name = @scanner[1]
           escape = @scanner[2].empty?
           quote = @scanner[3]
           attributes << [:html, :attr, attribute_name, [:escape, escape, parse_quoted_attribute_value(quote)]]
+        elsif @scanner.skip(@ruby_attribute_regexp)
+          attribute_name = @scanner[1]
+          escape = @scanner[2].empty?
+          attribute_value = parse_ruby_attribute_value(attribute_delimiter_closing)
+          syntax_error!(Errors::InvalidEmptyAttributeError) if attribute_value.empty?
+          attributes << [:html, :attr, attribute_name, [:slim, :attrvalue, escape, attribute_value]]
         elsif !attribute_delimiter_closing_part_regexp
           break
         elsif @scanner.skip(boolean_attribute_regexp)
@@ -262,6 +278,46 @@ module Slimi
       end
 
       attributes
+    end
+
+    # Parse Ruby attribute value part.
+    #   e.g. div class=foo
+    #                  ^^^
+    #                     `- Ruby attribute value
+    # @param [String] attribute_delimiter_closing
+    # @return [String]
+    def parse_ruby_attribute_value(attribute_delimiter_closing)
+      ending_regexp = /\s/
+      ending_regexp = ::Regexp.union(ending_regexp, attribute_delimiter_closing) if attribute_delimiter_closing
+      count = 0
+      attribute_value = +''
+      opening_delimiter = nil
+      closing_delimiter = nil
+      loop do
+        break if count.zero? && @scanner.match?(ending_regexp)
+
+        if @scanner.skip(/([,\\])\r?\n/)
+          attribute_value << @scanner[1] << "\n"
+        else
+          if count.positive?
+            if opening_delimiter && @scanner.skip(::Regexp.escape(opening_delimiter))
+              count += 1
+            elsif closing_delimiter && @scanner.skip(::Regexp.escape(closing_delimiter))
+              count -= 1
+            end
+          elsif @scanner.skip(@ruby_attribute_delimiter_regexp)
+            count = 1
+            opening_delimiter = @scanner.matched
+            closing_delimiter = @ruby_attribute_delimiters[opening_delimiter]
+          end
+          if (character = @scanner.scan(/./))
+            attribute_value << character
+          end
+        end
+      end
+      syntax_error!(Errors::RubyAttributeClosingDelimiterNotFoundError) if count != 0
+
+      attribute_value
     end
 
     # @return [Boolean]
@@ -524,12 +580,17 @@ module Slimi
       # @return [Hash]
       attr_reader :attribute_delimiters
 
+      # @return [Hash]
+      attr_reader :ruby_attribute_delimiters
+
       # @param [Hash] attribute_delimiters
       # @param [String] default_tag
+      # @param [Hash] ruby_attribute_delimiters
       # @param [Hash] shortcut
-      def initialize(attribute_delimiters:, default_tag:, shortcut:)
+      def initialize(attribute_delimiters:, default_tag:, ruby_attribute_delimiters:, shortcut:)
         @attribute_delimiters = attribute_delimiters
         @default_tag = default_tag
+        @ruby_attribute_delimiters = ruby_attribute_delimiters
         @shortcut = shortcut
       end
 
@@ -586,6 +647,11 @@ module Slimi
       end
 
       # @return [Regexp]
+      def ruby_attribute_regexp
+        /#{attribute_name_regexp}[ \t]*=(=?)[ \t]*/
+      end
+
+      # @return [Regexp]
       def embedded_template_regexp
         /(#{::Regexp.union(EMBEDDED_TEMPLAE_ENGINE_NAMES)})(?:[ \t]*(?:(.*)))?:([ \t]*)/
       end
@@ -593,6 +659,11 @@ module Slimi
       # @return [Regexp]
       def quoted_attribute_regexp
         /#{attribute_name_regexp}[ \t]*=(=?)[ \t]*("|')/
+      end
+
+      # @return [Regexp]
+      def ruby_attribute_delimiter_regexp
+        ::Regexp.union(@ruby_attribute_delimiters.keys)
       end
 
       # @return [Regexp] Pattern that matches to tag header part.
