@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.3.0 - 2021-12-24
+
 ### Added
 
 - Support unquoted attributes.
