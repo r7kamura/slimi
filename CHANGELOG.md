@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Support :file option on parser for showing correct file path on syntax error.
+
 ### Fixed
 
 - Fix NameError on unknown line indicator.

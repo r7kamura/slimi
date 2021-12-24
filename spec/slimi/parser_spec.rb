@@ -6,6 +6,10 @@ RSpec.describe Slimi::Parser do
       parser.call(source)
     end
 
+    let(:file_path) do
+      'example.html.slim'
+    end
+
     let(:parser) do
       described_class.new(
         attr_list_delims: {
@@ -13,6 +17,7 @@ RSpec.describe Slimi::Parser do
           '[' => ']',
           '{' => '}'
         },
+        file: file_path,
         code_attr_delims: {
           '(' => ')',
           '[' => ']',
@@ -397,8 +402,10 @@ RSpec.describe Slimi::Parser do
         SLIM
       end
 
-      it 'returns expected s-expression' do
-        expect { subject }.to raise_error(Slimi::Errors::UnknownLineIndicatorError)
+      it 'raises expected error' do
+        expect { subject }.to raise_error(Slimi::Errors::UnknownLineIndicatorError) { |error|
+          expect(error.to_s).to include(file_path)
+        }
       end
     end
   end

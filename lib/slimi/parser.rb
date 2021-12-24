@@ -6,6 +6,7 @@ require 'temple'
 module Slimi
   class Parser < ::Temple::Parser
     define_options(
+      :file,
       attr_list_delims: {
         '(' => ')',
         '[' => ']',
@@ -24,6 +25,7 @@ module Slimi
 
     def initialize(options = {})
       super
+      @file_path = options[:file] || '(__TEMPLATE__)'
       factory = Factory.new(
         attribute_delimiters: options[:attr_list_delims] || {},
         default_tag: options[:default_tag] || 'div',
@@ -554,7 +556,7 @@ module Slimi
       range = Range.new(index: @scanner.charpos, source: @scanner.string)
       raise syntax_error_class.new(
         column: range.column,
-        file_path: '(__TEMPLATE__)',
+        file_path: @file_path,
         line: range.line,
         line_number: range.line_number
       )
