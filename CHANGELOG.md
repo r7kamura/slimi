@@ -9,6 +9,7 @@
 ### Fixed
 
 - Fix NameError on unknown line indicator.
+- Fix bug that default parser options are not used.
 
 ## 0.3.0 - 2021-12-24
 

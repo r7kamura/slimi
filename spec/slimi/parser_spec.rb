@@ -12,17 +12,7 @@ RSpec.describe Slimi::Parser do
 
     let(:parser) do
       described_class.new(
-        attr_list_delims: {
-          '(' => ')',
-          '[' => ']',
-          '{' => '}'
-        },
         file: file_path,
-        code_attr_delims: {
-          '(' => ')',
-          '[' => ']',
-          '{' => '}'
-        },
         shortcut: {
           '#' => { attr: 'id' },
           '.' => { attr: 'class' },

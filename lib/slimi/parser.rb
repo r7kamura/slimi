@@ -23,7 +23,7 @@ module Slimi
       }
     )
 
-    def initialize(options = {})
+    def initialize(_options = {})
       super
       @file_path = options[:file] || '(__TEMPLATE__)'
       factory = Factory.new(
