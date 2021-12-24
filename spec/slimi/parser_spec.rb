@@ -389,5 +389,17 @@ RSpec.describe Slimi::Parser do
         )
       end
     end
+
+    context 'with unknown line indicator' do
+      let(:source) do
+        <<~'SLIM'
+          $
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        expect { subject }.to raise_error(Slimi::Errors::UnknownLineIndicatorError)
+      end
+    end
   end
 end

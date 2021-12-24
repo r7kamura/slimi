@@ -57,7 +57,7 @@ module Slimi
     class UnexpectedTextAfterClosedTagError < SlimSyntaxError
     end
 
-    class UnknownLineIndicator < SlimSyntaxError
+    class UnknownLineIndicatorError < SlimSyntaxError
     end
   end
 end

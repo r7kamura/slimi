@@ -69,7 +69,7 @@ module Slimi
         parse_embedded_template ||
         parse_doctype ||
         parse_tag ||
-        raise(Errors::UnknownLineIndicatorError)
+        syntax_error!(Errors::UnknownLineIndicatorError)
     end
 
     # Parse blank line.
