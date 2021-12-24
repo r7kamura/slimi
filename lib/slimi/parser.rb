@@ -198,8 +198,6 @@ module Slimi
         marker = @scanner[1]
         attribute_value = @scanner[2]
         attribute_names = @attribute_shortcuts[marker]
-        raise 'Illegal shortcut' unless attribute_names
-
         attribute_names.map do |attribute_name|
           result << [:html, :attr, attribute_name.to_s, [:static, attribute_value]]
         end
