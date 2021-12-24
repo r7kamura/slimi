@@ -398,5 +398,19 @@ RSpec.describe Slimi::Parser do
         }
       end
     end
+
+    context 'with empty line between nested lines' do
+      let(:source) do
+        <<~'SLIM'
+          div class=a(b)
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:slim, :attrvalue, true, 'a(b)']]], [:multi, [:newline]]]]
+        )
+      end
+    end
   end
 end

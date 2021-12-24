@@ -300,12 +300,12 @@ module Slimi
           attribute_value << @scanner[1] << "\n"
         else
           if count.positive?
-            if opening_delimiter && @scanner.skip(::Regexp.escape(opening_delimiter))
+            if opening_delimiter && @scanner.match?(/#{::Regexp.escape(opening_delimiter)}/)
               count += 1
-            elsif closing_delimiter && @scanner.skip(::Regexp.escape(closing_delimiter))
+            elsif closing_delimiter && @scanner.match?(/#{::Regexp.escape(closing_delimiter)}/)
               count -= 1
             end
-          elsif @scanner.skip(@ruby_attribute_delimiter_regexp)
+          elsif @scanner.match?(@ruby_attribute_delimiter_regexp)
             count = 1
             opening_delimiter = @scanner.matched
             closing_delimiter = @ruby_attribute_delimiters[opening_delimiter]
