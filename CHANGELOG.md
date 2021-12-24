@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.4.0 - 2021-12-25
+
 ### Added
 
 - Support :file option on parser for showing correct file path on syntax error.
