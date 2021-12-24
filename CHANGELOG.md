@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fix bug on parsing Ruby attribute value.
+- Fix bug on empty line in text block.
 
 ## 0.4.0 - 2021-12-25
 

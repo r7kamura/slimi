@@ -385,6 +385,23 @@ RSpec.describe Slimi::Parser do
       end
     end
 
+    context 'with empty line between embedded template' do
+      let(:source) do
+        <<~'SLIM'
+          javascript:
+            a
+
+            b
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:slim, :embedded, 'javascript', [:multi, [:newline], [:slimi, :interpolate, 14, 15, 'a'], [:newline], [:newline], [:slimi, :interpolate, 19, 20, 'b']], %i[html attrs]], [:newline]]
+        )
+      end
+    end
+
     context 'with unknown line indicator' do
       let(:source) do
         <<~'SLIM'

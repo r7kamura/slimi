@@ -503,9 +503,13 @@ module Slimi
       interpolate = parse_interpolate_line
       result << interpolate if interpolate
 
-      loop do
-        break unless @scanner.match?(/\r?\n[ \t]*/)
+      until @scanner.eos?
+        if @scanner.skip(/\r?\n[ \t]*(?=\r?\n)/)
+          result << [:newline]
+          next
+        end
 
+        @scanner.match?(/\r?\n[ \t]*/)
         indent = indent_from_last_match
         break if indent <= @indents.last
 
