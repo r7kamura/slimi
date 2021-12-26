@@ -338,6 +338,20 @@ RSpec.describe Slimi::Parser do
       end
     end
 
+    context 'with quoted attribute with quotes in interpolation' do
+      let(:source) do
+        <<~'SLIM'
+          div a="{#{"b"}}"
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'a', [:escape, true, [:slimi, :interpolate, 7, 15, "{\#{\"b\"}}"]]]], [:multi, [:newline]]]]
+        )
+      end
+    end
+
     context 'with interpolation' do
       let(:source) do
         <<~'SLIM'

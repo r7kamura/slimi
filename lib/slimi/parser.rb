@@ -220,18 +220,24 @@ module Slimi
       value = +''
       count = 0
       loop do
-        if @scanner.match?(/#{quote}/) && count.zero?
-          end_ = @scanner.charpos
-          @scanner.pos += @scanner.matched_size
-          break
-        end
-
-        if @scanner.skip(/\{/)
+        if @scanner.match?(/#{quote}/)
+          if count.zero?
+            end_ = @scanner.charpos
+            @scanner.pos += @scanner.matched_size
+            break
+          else
+            @scanner.pos += @scanner.matched_size
+            value << @scanner.matched
+          end
+        elsif @scanner.skip(/\{/)
           count += 1
+          value << @scanner.matched
         elsif @scanner.skip(/\}/)
           count -= 1
+          value << @scanner.matched
+        else
+          value << @scanner.scan(/[^{}#{quote}]*/)
         end
-        value << @scanner.scan(/[^{}#{quote}]*/)
       end
       [:slimi, :interpolate, begin_, end_, value]
     end
