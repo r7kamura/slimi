@@ -23,7 +23,7 @@ module Slimi
       def to_s
         <<~TEXT
           #{error_type} at #{@file_path}:#{@line_number}:#{@column}
-          #{@line}
+          #{@line.rstrip}
           #{' ' * (@column - 1)}^
         TEXT
       end
