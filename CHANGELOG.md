@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.4.2 - 2021-12-27
+
 ### Fixed
 
 - Fix bug on quoted attribute parser.
