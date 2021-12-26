@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.4.1 - 2021-12-26
+
 ### Fixed
 
 - Fix bug on parsing Ruby attribute value.
