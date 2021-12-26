@@ -2,14 +2,11 @@
 
 ## Unreleased
 
-### Added
-
-- Support multi-line attributes.
-
 ### Fixed
 
 - Fix bug on quoted attribute parser.
 - Remove trailing line-ending from source line of syntax error message.
+- Support multi-line attributes.
 
 ## 0.4.1 - 2021-12-26
 
