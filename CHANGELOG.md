@@ -24,7 +24,7 @@
 
 ### Added
 
-- Support unquoted attributes.
+- Support Ruby attributes.
 
 ### Fixed
 

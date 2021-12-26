@@ -240,7 +240,7 @@ RSpec.describe Slimi::Parser do
       end
     end
 
-    context 'with unquoted attribute' do
+    context 'with Ruby attribute' do
       let(:source) do
         <<~'SLIM'
           div class=a
