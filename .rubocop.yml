@@ -1,3 +1,6 @@
+require:
+  - rubocop-rspec
+
 AllCops:
   NewCops: enable
   SuggestExtensions: false
@@ -10,6 +13,18 @@ Lint/InterpolationCheck:
   Enabled: false
 
 Metrics:
+  Enabled: false
+
+RSpec/AnyInstance:
+  Enabled: false
+
+RSpec/ImplicitSubject:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/NamedSubject:
   Enabled: false
 
 Style/Documentation:

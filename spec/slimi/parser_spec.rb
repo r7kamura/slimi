@@ -254,6 +254,20 @@ RSpec.describe Slimi::Parser do
       end
     end
 
+    context 'with Ruby attribute with parentheses' do
+      let(:source) do
+        <<~'SLIM'
+          div class=a(b)
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:slim, :attrvalue, true, 'a(b)']]], [:multi, [:newline]]]]
+        )
+      end
+    end
+
     context 'with shortcut attribute' do
       let(:source) do
         <<~SLIM
@@ -427,20 +441,6 @@ RSpec.describe Slimi::Parser do
         expect { subject }.to raise_error(Slimi::Errors::UnknownLineIndicatorError) { |error|
           expect(error.to_s).to include(file_path)
         }
-      end
-    end
-
-    context 'with empty line between nested lines' do
-      let(:source) do
-        <<~'SLIM'
-          div class=a(b)
-        SLIM
-      end
-
-      it 'returns expected s-expression' do
-        is_expected.to eq(
-          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:slim, :attrvalue, true, 'a(b)']]], [:multi, [:newline]]]]
-        )
       end
     end
   end
