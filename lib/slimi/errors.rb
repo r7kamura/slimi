@@ -36,6 +36,9 @@ module Slimi
       end
     end
 
+    class AttributeClosingDelimiterNotFoundError < SlimSyntaxError
+    end
+
     class InvalidEmptyAttributeError < SlimSyntaxError
     end
 

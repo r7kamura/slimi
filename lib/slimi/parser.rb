@@ -279,7 +279,10 @@ module Slimi
         elsif @scanner.skip(attribute_delimiter_closing_part_regexp) # rubocop:disable Lint/DuplicateBranch
           break
         else
-          raise ::NotImplementedError
+          @scanner.skip(/[ \t]+/)
+          expect_line_ending
+
+          syntax_error!(Errors::AttributeClosingDelimiterNotFoundError) if @scanner.eos?
         end
       end
 

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Support multi-line attributes.
+
 ### Fixed
 
 - Fix bug on quoted attribute parser.

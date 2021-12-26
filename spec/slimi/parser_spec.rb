@@ -268,6 +268,35 @@ RSpec.describe Slimi::Parser do
       end
     end
 
+    context 'with multi-line attribute' do
+      let(:source) do
+        <<~'SLIM'
+          div[
+            class="a"
+          ]
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:newline], [:newline], [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:escape, true, [:slimi, :interpolate, 14, 15, 'a']]]], [:multi, [:newline]]]]
+        )
+      end
+    end
+
+    context 'with multi-line attribute and missing attribute closing delimiter' do
+      let(:source) do
+        <<~'SLIM'
+          div[
+            class="a"
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        expect { subject }.to raise_error(Slimi::Errors::AttributeClosingDelimiterNotFoundError)
+      end
+    end
+
     context 'with shortcut attribute' do
       let(:source) do
         <<~SLIM
