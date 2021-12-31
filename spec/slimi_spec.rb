@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'slim'
+require 'temple'
 
 RSpec.describe Slimi do
   subject do
@@ -8,44 +9,11 @@ RSpec.describe Slimi do
   end
 
   let(:template) do
-    Temple::Templates::Tilt(engine_class, register_as: 'slimi')
+    Temple::Templates::Tilt(Slimi::Engine, register_as: 'slimi')
   end
 
   let(:template_options) do
     {}
-  end
-
-  let(:engine_class) do
-    Class.new(Temple::Engine) do
-      define_options(
-        attr_quote: '"',
-        default_tag: 'div',
-        format: :xhtml,
-        merge_attrs: { 'class' => ' ' },
-        pretty: false,
-        sort_attrs: true
-      )
-
-      use Slimi::Parser
-      use Slimi::Filters::Unposition
-
-      use Slim::Embedded
-      use Slimi::Filters::Interpolation
-      use Slim::Splat::Filter
-      use Slim::DoInserter
-      use Slim::EndInserter
-      use Slim::Controls
-      html :AttributeSorter
-      html :AttributeMerger
-      use Slim::CodeAttributes
-      use(:AttributeRemover) { Temple::HTML::AttributeRemover.new(remove_empty_attrs: options[:merge_attrs].keys) }
-      html :Pretty
-      filter :Escapable
-      filter :ControlFlow
-      filter :MultiFlattener
-      filter :StaticMerger
-      generator :StringBuffer
-    end
   end
 
   context 'with double quote' do
