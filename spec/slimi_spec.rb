@@ -92,4 +92,19 @@ RSpec.describe Slimi do
       )
     end
   end
+
+  context 'with end-less if' do
+    let(:source) do
+      <<~'SLIM'
+        - if true
+          | a
+      SLIM
+    end
+
+    it 'returns expected s-expression' do
+      is_expected.to eq(
+        'a'
+      )
+    end
+  end
 end

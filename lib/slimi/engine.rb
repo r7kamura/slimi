@@ -21,7 +21,7 @@ module Slimi
     use Filters::Interpolation
     use ::Slim::Splat::Filter
     use Filters::DoInserter
-    use ::Slim::EndInserter
+    use Filters::EndInserter
     use ::Slim::Controls
     html :AttributeSorter
     html :AttributeMerger
