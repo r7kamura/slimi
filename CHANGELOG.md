@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.5.0 - 2022-01-02
+
 ### Added
 
 - Add Slimi::Engine.
