@@ -22,7 +22,9 @@ module Slimi
     use ::Slim::Splat::Filter
     use Filters::DoInserter
     use Filters::EndInserter
-    use ::Slim::Controls
+    use Filters::Control
+    use Filters::Output
+    use Filters::Text
     html :AttributeSorter
     html :AttributeMerger
     use ::Slim::CodeAttributes
