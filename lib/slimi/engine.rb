@@ -19,7 +19,6 @@ module Slimi
     use Filters::Unposition
     use ::Slim::Embedded
     use Filters::Interpolation
-    use ::Slim::Splat::Filter
     use Filters::DoInserter
     use Filters::EndInserter
     use Filters::Control
