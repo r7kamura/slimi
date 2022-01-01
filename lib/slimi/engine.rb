@@ -27,7 +27,7 @@ module Slimi
     use Filters::Text
     html :AttributeSorter
     html :AttributeMerger
-    use ::Slim::CodeAttributes
+    use Filters::Attribute
     use(:AttributeRemover) { ::Temple::HTML::AttributeRemover.new(remove_empty_attrs: options[:merge_attrs].keys) }
     html :Pretty
     filter :Escapable

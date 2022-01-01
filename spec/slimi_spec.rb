@@ -63,6 +63,42 @@ RSpec.describe Slimi do
       HTML
     ],
     [
+      'shortcut attribute',
+      <<~'SLIM',
+        div.a
+      SLIM
+      <<~HTML
+        <div class="a"></div>
+      HTML
+    ],
+    [
+      'shortcut attribute without tag',
+      <<~'SLIM',
+        .a
+      SLIM
+      <<~HTML
+        <div class="a"></div>
+      HTML
+    ],
+    [
+      'code attribute',
+      <<~'SLIM',
+        div a=1+1
+      SLIM
+      <<~HTML
+        <div a="2"></div>
+      HTML
+    ],
+    [
+      'Array code attribute with mergable attribute name',
+      <<~'SLIM',
+        div class=(%w[a b c])
+      SLIM
+      <<~HTML
+        <div class="a b c"></div>
+      HTML
+    ],
+    [
       'do-less control',
       <<~'SLIM',
         - 2.times
