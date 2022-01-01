@@ -11,4 +11,4 @@ module Slimi
   autoload :Range, 'slimi/range'
 end
 
-require 'slimi/railtie' if defined?(Rails)
+require_relative 'slimi/railtie' if defined?(Rails)
