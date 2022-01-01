@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Add Slimi::Engine.
+
 ## 0.4.2 - 2021-12-27
 
 ### Fixed
