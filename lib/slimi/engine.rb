@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'slim' # TODO: Eliminate this dependency in the future.
 require 'temple'
 
 module Slimi
@@ -17,7 +16,7 @@ module Slimi
 
     use Parser
     use Filters::Unposition
-    use ::Slim::Embedded
+    use Filters::Embedded
     use Filters::Interpolation
     use Filters::DoInserter
     use Filters::EndInserter
