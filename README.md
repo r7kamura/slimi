@@ -15,7 +15,7 @@ It uses Slimi to apply `rubocop --auto-correct` to embedded Ruby codes in Slim t
 
 ## Usage
 
-Just replace `gem 'slim'` with `gem 'slimi` in your application's Gemfile.
+Just replace `gem 'slim'` with `gem 'slimi'` in your application's Gemfile.
 
 ```ruby
 gem 'slimi'
