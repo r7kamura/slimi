@@ -20,7 +20,7 @@ module Slimi
     use ::Slim::Embedded
     use Filters::Interpolation
     use ::Slim::Splat::Filter
-    use ::Slim::DoInserter
+    use Filters::DoInserter
     use ::Slim::EndInserter
     use ::Slim::Controls
     html :AttributeSorter

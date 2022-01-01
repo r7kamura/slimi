@@ -62,4 +62,34 @@ RSpec.describe Slimi do
       )
     end
   end
+
+  context 'with non-do control' do
+    let(:source) do
+      <<~'SLIM'
+        - 2.times
+          | Hello
+      SLIM
+    end
+
+    it 'returns expected s-expression' do
+      is_expected.to eq(
+        'Hello' * 2
+      )
+    end
+  end
+
+  context 'with non-do output' do
+    let(:source) do
+      <<~'SLIM'
+        = 'foo'.gsub(/o/)
+          | a
+      SLIM
+    end
+
+    it 'returns expected s-expression' do
+      is_expected.to eq(
+        'faa'
+      )
+    end
+  end
 end
