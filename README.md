@@ -20,3 +20,40 @@ Just replace `gem 'slim'` with `gem 'slimi'` in your application's Gemfile.
 ```ruby
 gem 'slimi'
 ```
+
+## Compatibility
+
+- Line indicators
+    - [x] Vebatim text
+    - [x] Inline HTML
+    - [x] Control
+    - [x] Output
+    - [x] HTML comment
+    - [x] Code comment
+    - [x] IE conditional comment
+- Tags
+    - [x] Doctype declaration
+    - [x] Closed tags
+    - [x] Trailing and leading white space
+    - [x] Inline tags
+    - [x] Text content
+    - [x] Dynamic content
+    - [x] Tag shortcuts
+    - [ ] Dynamic tags
+- Attributes
+    - [x] Attributes wrapper
+    - [x] Quoted attributes
+    - [x] Ruby attributes
+    - [x] Boolean attributes
+    - [x] Attribute merging
+    - [x] Attribute shortcuts
+    - [ ] Splat attributes
+- Plugins
+    - [ ] Include partials
+    - [ ] Translator/I18n
+    - [ ] Logic-less mode
+    - [ ] Smart text mode
+- Etc.
+    - [ ] CLI tools
+- Slimi-only features
+    - [x] Embedded Ruby code location
