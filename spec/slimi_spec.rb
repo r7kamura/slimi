@@ -15,94 +15,110 @@ RSpec.describe Slimi do
     {}
   end
 
-  context 'with double quote' do
-    let(:source) do
-      <<~SLIM
-        p = "<strong>Hello World\\n, meet \\"Slim\\"</strong>."
+  [
+    [
+      'tag with content',
+      <<~'SLIM',
+        p a
       SLIM
-    end
+      <<~HTML
+        <p>a</p>
+      HTML
+    ],
+    [
+      'tag without content',
+      <<~'SLIM',
+        p
+      SLIM
+      <<~HTML
+        <p></p>
+      HTML
+    ],
+    [
+      'tag with indented content',
+      <<~'SLIM',
+        p
+          | a
+      SLIM
+      <<~HTML
+        <p>a</p>
+      HTML
+    ],
+    [
+      'double quote in output',
+      <<~'SLIM',
+        = '"'
+      SLIM
+      <<~HTML
+        &quot;
+      HTML
+    ],
+    [
+      'single quote in output',
+      <<~'SLIM',
+        = "'"
+      SLIM
+      <<~HTML
+        &#39;
+      HTML
+    ],
+    [
+      'do-less control',
+      <<~'SLIM',
+        - 2.times
+          | a
+      SLIM
+      <<~HTML
+        aa
+      HTML
+    ],
+    [
+      'do-less output',
+      <<~'SLIM',
+        = 'foo'.gsub(/o/)
+          | a
+      SLIM
+      <<~HTML
+        faa
+      HTML
+    ],
+    [
+      'end-less if',
+      <<~'SLIM',
+        - if true
+          | a
+      SLIM
+      <<~HTML
+        a
+      HTML
+    ]
+  ].each do |(name, slim, html)|
+    context "with #{name}" do
+      let(:source) do
+        slim
+      end
 
-    it 'returns expected HTML' do
-      is_expected.to eq(
-        "<p>&lt;strong&gt;Hello World\n, meet \&quot;Slim\&quot;&lt;/strong&gt;.</p>"
-      )
+      it 'returns expected HTML' do
+        is_expected.to eq(html.delete_suffix("\n"))
+      end
     end
   end
 
-  context 'with single quote' do
-    let(:source) do
-      <<~SLIM
-        p = "<strong>Hello World\\n, meet 'Slim'</strong>."
-      SLIM
-    end
-
-    it 'returns expected HTML' do
-      is_expected.to eq(
-        "<p>&lt;strong&gt;Hello World\n, meet &#39;Slim&#39;&lt;/strong&gt;.</p>"
-      )
-    end
-  end
-
-  context 'with html_safe' do
+  context 'with double quote in html_safe String' do
     before do
       template_options[:use_html_safe] = true
       allow_any_instance_of(String).to receive(:html_safe?).and_return(true)
     end
 
     let(:source) do
-      <<~SLIM
-        p = "<strong>Hello World\\n, meet \\"Slim\\"</strong>."
-      SLIM
-    end
-
-    it 'returns expected HTML' do
-      is_expected.to eq(
-        "<p><strong>Hello World\n, meet \"Slim\"</strong>.</p>"
-      )
-    end
-  end
-
-  context 'with non-do control' do
-    let(:source) do
       <<~'SLIM'
-        - 2.times
-          | Hello
+        = '"'
       SLIM
     end
 
     it 'returns expected HTML' do
       is_expected.to eq(
-        'Hello' * 2
-      )
-    end
-  end
-
-  context 'with non-do output' do
-    let(:source) do
-      <<~'SLIM'
-        = 'foo'.gsub(/o/)
-          | a
-      SLIM
-    end
-
-    it 'returns expected HTML' do
-      is_expected.to eq(
-        'faa'
-      )
-    end
-  end
-
-  context 'with end-less if' do
-    let(:source) do
-      <<~'SLIM'
-        - if true
-          | a
-      SLIM
-    end
-
-    it 'returns expected HTML' do
-      is_expected.to eq(
-        'a'
+        '"'
       )
     end
   end
