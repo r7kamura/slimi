@@ -71,7 +71,7 @@ RSpec.describe Slimi do
       SLIM
     end
 
-    it 'returns expected s-expression' do
+    it 'returns expected HTML' do
       is_expected.to eq(
         'Hello' * 2
       )
@@ -86,7 +86,7 @@ RSpec.describe Slimi do
       SLIM
     end
 
-    it 'returns expected s-expression' do
+    it 'returns expected HTML' do
       is_expected.to eq(
         'faa'
       )
@@ -101,7 +101,7 @@ RSpec.describe Slimi do
       SLIM
     end
 
-    it 'returns expected s-expression' do
+    it 'returns expected HTML' do
       is_expected.to eq(
         'a'
       )
