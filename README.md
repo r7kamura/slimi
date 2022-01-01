@@ -5,6 +5,8 @@
 
 Yet another implementation for [Slim](https://github.com/slim-template/slim) template language.
 
+## Introduction
+
 Slimi provides almost the same functionality as Slim, with a few additional useful features,
 such as generating AST with detailed location information about embedded Ruby codes.
 
@@ -14,3 +16,7 @@ It uses Slimi to apply `rubocop --auto-correct` to embedded Ruby codes in Slim t
 ## Usage
 
 Just replace `gem 'slim'` with `gem 'slimi` in your application's Gemfile.
+
+```ruby
+gem 'slimi'
+```
