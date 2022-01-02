@@ -7,7 +7,7 @@ module Slimi
     # @param [String, nil] source
     # @return [String]
     def call(template, source = nil)
-      Render.new(
+      Renderer.new(
         source: source,
         template: template
       ).call
@@ -55,8 +55,8 @@ module Slimi
       def engine_amble_options
         if with_annotate_rendered_view_with_filenames?
           {
-            postamble: "<!-- END #{template.short_identifier} -->\n",
-            preamble: "<!-- BEGIN #{template.short_identifier} -->\n"
+            postamble: "<!-- END #{@template.short_identifier} -->\n",
+            preamble: "<!-- BEGIN #{@template.short_identifier} -->\n"
           }
         else
           {}
