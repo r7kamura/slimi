@@ -14,6 +14,7 @@
 
 - Fix bug at registering handler to ActionView.
 - Fix Engine options at RailsTemplateHandler.
+- Define missing :generator option at Engine.
 
 ## 0.5.1 - 2022-01-02
 

@@ -9,6 +9,7 @@ module Slimi
       attr_quote: '"',
       default_tag: 'div',
       format: :xhtml,
+      generator: ::Temple::Generators::StringBuffer,
       merge_attrs: { 'class' => ' ' },
       pretty: false,
       sort_attrs: true
