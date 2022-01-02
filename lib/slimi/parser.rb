@@ -261,6 +261,7 @@ module Slimi
 
       # TODO: Support splat attributes.
       loop do
+        charpos = @scanner.charpos
         if @scanner.skip(@quoted_attribute_regexp)
           attribute_name = @scanner[1]
           escape = @scanner[2].empty?
@@ -271,7 +272,7 @@ module Slimi
           escape = @scanner[2].empty?
           attribute_value = parse_ruby_attribute_value(attribute_delimiter_closing)
           syntax_error!(Errors::InvalidEmptyAttributeError) if attribute_value.empty?
-          attributes << [:html, :attr, attribute_name, [:slim, :attrvalue, escape, attribute_value]]
+          attributes << [:html, :attr, attribute_name, [:slimi, :position, charpos, charpos + attribute_value.length, [:slim, :attrvalue, escape, attribute_value]]]
         elsif !attribute_delimiter_closing_part_regexp
           break
         elsif @scanner.skip(boolean_attribute_regexp)
