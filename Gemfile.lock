@@ -8,11 +8,40 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    actionview (7.0.0)
+      activesupport (= 7.0.0)
+      builder (~> 3.1)
+      erubi (~> 1.4)
+      rails-dom-testing (~> 2.0)
+      rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    activesupport (7.0.0)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
     ast (2.4.2)
+    builder (3.2.4)
+    concurrent-ruby (1.1.9)
+    crass (1.0.6)
     diff-lcs (1.4.4)
+    erubi (1.10.0)
+    i18n (1.8.11)
+      concurrent-ruby (~> 1.0)
+    loofah (2.13.0)
+      crass (~> 1.0.2)
+      nokogiri (>= 1.5.9)
+    minitest (5.15.0)
+    nokogiri (1.12.5-x86_64-linux)
+      racc (~> 1.4)
     parallel (1.21.0)
     parser (3.0.3.2)
       ast (~> 2.4.1)
+    racc (1.6.0)
+    rails-dom-testing (2.0.3)
+      activesupport (>= 4.2.0)
+      nokogiri (>= 1.6)
+    rails-html-sanitizer (1.4.2)
+      loofah (~> 2.3)
     rainbow (3.0.0)
     rake (13.0.6)
     regexp_parser (2.2.0)
@@ -46,12 +75,15 @@ GEM
     ruby-progressbar (1.11.0)
     temple (0.8.2)
     tilt (2.0.10)
+    tzinfo (2.0.4)
+      concurrent-ruby (~> 1.0)
     unicode-display_width (2.1.0)
 
 PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  actionview
   rake (~> 13.0)
   rspec
   rubocop

@@ -27,5 +27,9 @@ RSpec/MultipleExpectations:
 RSpec/NamedSubject:
   Enabled: false
 
+Security/Eval:
+  Exclude:
+    - 'spec/**/*.rb'
+
 Style/Documentation:
   Enabled: false
