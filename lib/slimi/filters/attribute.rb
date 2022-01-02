@@ -3,7 +3,7 @@
 module Slimi
   module Filters
     # Handle `[:slimi, :attributes, ...]`.
-    class Attribute < ::Temple::HTML::Filter
+    class Attribute < Base
       define_options :merge_attrs
 
       # @param [Array<Array>] expressions

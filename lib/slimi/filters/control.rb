@@ -3,7 +3,7 @@
 module Slimi
   module Filters
     # Handle `[:slimi, :control, code, multi]`.
-    class Control < ::Temple::HTML::Filter
+    class Control < Base
       # @param [String] code
       # @param [Array] multi
       # @return [Array]

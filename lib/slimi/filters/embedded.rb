@@ -3,7 +3,7 @@
 module Slimi
   module Filters
     # @api private
-    class TextCollector < ::Temple::HTML::Filter
+    class TextCollector < Base
       def call(exp)
         @collected = ''
         super(exp)
@@ -17,7 +17,7 @@ module Slimi
     end
 
     # @api private
-    class NewlineCollector < ::Temple::HTML::Filter
+    class NewlineCollector < Base
       def call(exp)
         @collected = [:multi]
         super(exp)
@@ -31,7 +31,7 @@ module Slimi
     end
 
     # @api private
-    class OutputProtector < ::Temple::HTML::Filter
+    class OutputProtector < Base
       def call(exp)
         @protect = []
         @collected = ''
@@ -64,7 +64,7 @@ module Slimi
 
     # Temple filter which processes embedded engines
     # @api private
-    class Embedded < ::Temple::HTML::Filter
+    class Embedded < Base
       @engines = {}
 
       class << self
@@ -122,7 +122,7 @@ module Slimi
         list&.map(&:to_sym)
       end
 
-      class Engine < ::Temple::HTML::Filter
+      class Engine < Base
         protected
 
         def collect_text(body)

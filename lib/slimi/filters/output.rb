@@ -3,7 +3,7 @@
 module Slimi
   module Filters
     # Handle `[:slimi, :output, escape, code, multi]`.
-    class Output < ::Temple::HTML::Filter
+    class Output < Base
       define_options :disable_capture
 
       IF_REGEXP = /\A(if|unless)\b|\bdo\s*(\|[^|]*\|)?\s*$/.freeze

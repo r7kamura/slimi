@@ -3,7 +3,7 @@
 module Slimi
   module Filters
     # Append missing `do` to embedded Ruby code.
-    class DoInserter < ::Temple::HTML::Filter
+    class DoInserter < Base
       VALID_RUBY_LINE_REGEXP = /(\A(if|unless|else|elsif|when|begin|rescue|ensure|case)\b)|\bdo\s*(\|[^|]*\|\s*)?\Z/.freeze
 
       # @param [String] code

@@ -3,7 +3,7 @@
 module Slimi
   module Filters
     # Append missing `end` line to embedded Ruby code in control block.
-    class EndInserter < ::Temple::HTML::Filter
+    class EndInserter < Base
       # @param [Array<Array>] expressions
       def on_multi(*expressions)
         result = [:multi]
