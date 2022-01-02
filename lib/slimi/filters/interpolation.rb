@@ -4,29 +4,7 @@ require 'strscan'
 
 module Slimi
   module Filters
-    class Interpolation
-      def initialize(*); end
-
-      def call(node)
-        convert(node)
-      end
-
-      private
-
-      def convert(value)
-        if value.instance_of?(::Array)
-          if value[0] == :slimi && value[1] == :interpolate
-            on_slimi_interpolate(value[2], value[3], value[4])
-          else
-            value.map do |element|
-              call(element)
-            end
-          end
-        else
-          value
-        end
-      end
-
+    class Interpolation < Base
       # @param [Integer] begin_
       # @param [Integer] end_
       # @return [Array] S-expression.
@@ -47,7 +25,7 @@ module Slimi
             else
               escape = false
             end
-            block << [:slimi, :position, begin2, begin2 + code.length, [:slim, :output, escape, code, [:multi]]]
+            block << [:slimi, :position, begin2, begin2 + code.length, [:slimi, :output, escape, code, [:multi]]]
           elsif (value = scanner.scan(/([#\\]?[^#\\]*([#\\][^\\\#{][^#\\]*)*)/)) # rubocop:disable Lint/DuplicateBranch
             block << [:static, value]
           end

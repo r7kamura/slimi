@@ -115,7 +115,7 @@ module Slimi
 
       embedded_template_engine_name = @scanner[1]
       attributes = parse_attributes
-      @stacks.last << [:slim, :embedded, embedded_template_engine_name, parse_text_block, attributes]
+      @stacks.last << [:slimi, :embedded, embedded_template_engine_name, parse_text_block, attributes]
     end
 
     # @return [Boolean]
@@ -150,14 +150,14 @@ module Slimi
           block = [:multi]
           @stacks.last.insert(-2, [:static, ' ']) if with_leading_white_space2
           @scanner.skip(/[ \t]+/)
-          tag << with_position { [:slim, :output, escape, parse_broken_lines, block] }
+          tag << with_position { [:slimi, :output, escape, parse_broken_lines, block] }
           @stacks.last << [:static, ' '] if with_trailing_white_space2
           @stacks << block
         elsif @scanner.skip(%r{[ \t]*/[ \t]*})
           syntax_error!(Errors::UnexpectedTextAfterClosedTagError) unless @scanner.match?(/\r?\n/)
         else
           @scanner.skip(/[ \t]+/)
-          tag << [:slim, :text, :inline, parse_text_block]
+          tag << [:slimi, :text, :inline, parse_text_block]
         end
         true
       else
@@ -272,7 +272,7 @@ module Slimi
           charpos = @scanner.charpos
           attribute_value = parse_ruby_attribute_value(attribute_delimiter_closing)
           syntax_error!(Errors::InvalidEmptyAttributeError) if attribute_value.empty?
-          attributes << [:html, :attr, attribute_name, [:slimi, :position, charpos, charpos + attribute_value.length, [:slim, :attrvalue, escape, attribute_value]]]
+          attributes << [:html, :attr, attribute_name, [:slimi, :position, charpos, charpos + attribute_value.length, [:slimi, :attrvalue, escape, attribute_value]]]
         elsif !attribute_delimiter_closing_part_regexp
           break
         elsif @scanner.skip(boolean_attribute_regexp)
@@ -334,7 +334,7 @@ module Slimi
     def parse_html_comment
       if @scanner.skip(%r{/!})
         text_block = parse_text_block
-        text = [:slim, :text, :verbatim, text_block]
+        text = [:slimi, :text, :verbatim, text_block]
         @stacks.last << [:html, :comment, text]
         true
       else
@@ -381,7 +381,7 @@ module Slimi
     def parse_verbatim_text_block_inner
       if @scanner.skip(/([|']) ?/)
         with_trailing_white_space = @scanner[1] == "'"
-        @stacks.last << [:slim, :text, :verbatim, parse_text_block]
+        @stacks.last << [:slimi, :text, :verbatim, parse_text_block]
         @stacks.last << [:static, ' '] if with_trailing_white_space
         true
       else
@@ -420,7 +420,7 @@ module Slimi
       if @scanner.skip(/-/)
         block = [:multi]
         @scanner.skip(/[ \t]+/)
-        @stacks.last << with_position { [:slim, :control, parse_broken_lines, block] }
+        @stacks.last << with_position { [:slimi, :control, parse_broken_lines, block] }
         @stacks << block
         true
       else
@@ -443,7 +443,7 @@ module Slimi
         block = [:multi]
         @stacks.last << [:static, ' '] if with_trailing_white_space
         @scanner.skip(/[ \t]+/)
-        @stacks.last << with_position { [:slim, :output, escape, parse_broken_lines, block] }
+        @stacks.last << with_position { [:slimi, :output, escape, parse_broken_lines, block] }
         @stacks.last << [:static, ' '] if with_leading_white_space
         @stacks << block
       else

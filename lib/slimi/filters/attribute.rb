@@ -3,7 +3,7 @@
 module Slimi
   module Filters
     # Handle `[:slimi, :attributes, ...]`.
-    class Attribute < ::Temple::HTML::Filter
+    class Attribute < Base
       define_options :merge_attrs
 
       # @param [Array<Array>] expressions
@@ -16,7 +16,7 @@ module Slimi
       # @param [Array] value
       # @return [Array]
       def on_html_attr(name, value)
-        if value[0] == :slim && value[1] == :attrvalue && !options[:merge_attrs][name]
+        if value[0] == :slimi && value[1] == :attrvalue && !options[:merge_attrs][name]
           escape = value[2]
           code = value[3]
           case code
@@ -42,7 +42,7 @@ module Slimi
       # @param [Boolean] escape
       # @param [String] code\
       # @return [Array]\
-      def on_slim_attrvalue(escape, code)
+      def on_slimi_attrvalue(escape, code)
         if (delimiter = options[:merge_attrs][@attr])
           tmp = unique_name
           [:multi,

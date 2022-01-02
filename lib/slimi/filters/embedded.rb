@@ -3,21 +3,21 @@
 module Slimi
   module Filters
     # @api private
-    class TextCollector < ::Temple::HTML::Filter
+    class TextCollector < Base
       def call(exp)
         @collected = ''
         super(exp)
         @collected
       end
 
-      def on_slim_interpolate(text)
+      def on_slimi_interpolate(text)
         @collected << text
         nil
       end
     end
 
     # @api private
-    class NewlineCollector < ::Temple::HTML::Filter
+    class NewlineCollector < Base
       def call(exp)
         @collected = [:multi]
         super(exp)
@@ -31,7 +31,7 @@ module Slimi
     end
 
     # @api private
-    class OutputProtector < ::Temple::HTML::Filter
+    class OutputProtector < Base
       def call(exp)
         @protect = []
         @collected = ''
@@ -45,9 +45,9 @@ module Slimi
         nil
       end
 
-      def on_slim_output(escape, text, content)
+      def on_slimi_output(escape, text, content)
         @collected << @tag
-        @protect << [:slim, :output, escape, text, content]
+        @protect << [:slimi, :output, escape, text, content]
         nil
       end
 
@@ -64,7 +64,7 @@ module Slimi
 
     # Temple filter which processes embedded engines
     # @api private
-    class Embedded < ::Temple::HTML::Filter
+    class Embedded < Base
       @engines = {}
 
       class << self
@@ -101,12 +101,12 @@ module Slimi
         @disabled = normalize_engine_list(options[:disable_engines])
       end
 
-      def on_slim_embedded(name, body, attrs)
+      def on_slimi_embedded(name, body, attrs)
         name = name.to_sym
         raise(Temple::FilterError, "Embedded engine #{name} is disabled") unless enabled?(name)
 
         @engines[name] ||= self.class.create(name, options)
-        @engines[name].on_slim_embedded(name, body, attrs)
+        @engines[name].on_slimi_embedded(name, body, attrs)
       end
 
       def enabled?(name)
@@ -122,7 +122,7 @@ module Slimi
         list&.map(&:to_sym)
       end
 
-      class Engine < ::Temple::HTML::Filter
+      class Engine < Base
         protected
 
         def collect_text(body)
@@ -138,7 +138,7 @@ module Slimi
 
       # Basic tilt engine
       class TiltEngine < Engine
-        def on_slim_embedded(engine, body, _attrs)
+        def on_slimi_embedded(engine, body, _attrs)
           tilt_engine = Tilt[engine] || raise(Temple::FilterError, "Tilt engine #{engine} is not available.")
           tilt_options = options[engine.to_sym] || {}
           tilt_options[:default_encoding] ||= 'utf-8'
@@ -194,7 +194,7 @@ module Slimi
       class TagEngine < Engine
         disable_option_validator!
 
-        def on_slim_embedded(engine, body, attrs)
+        def on_slimi_embedded(engine, body, attrs)
           unless options[:attributes].empty?
             options[:attributes].map do |k, v|
               attrs << [:html, :attr, k, [:static, v]]
@@ -207,7 +207,7 @@ module Slimi
             opts.delete(:tag)
             opts.delete(:attributes)
             @engine ||= options[:engine].new(opts)
-            body = @engine.on_slim_embedded(engine, body, attrs)
+            body = @engine.on_slimi_embedded(engine, body, attrs)
           end
 
           [:html, :tag, options[:tag], attrs, body]
@@ -221,14 +221,14 @@ module Slimi
 
         set_options tag: :script, attributes: {}
 
-        def on_slim_embedded(engine, body, attrs)
+        def on_slimi_embedded(engine, body, attrs)
           super(engine, [:html, :js, body], attrs)
         end
       end
 
       # Embeds ruby code
       class RubyEngine < Engine
-        def on_slim_embedded(_engine, body, _attrs)
+        def on_slimi_embedded(_engine, body, _attrs)
           [:multi, [:newline], [:code, "#{collect_text(body)}\n"]]
         end
       end

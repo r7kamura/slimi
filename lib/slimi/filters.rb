@@ -3,6 +3,7 @@
 module Slimi
   module Filters
     autoload :Attribute, 'slimi/filters/attribute'
+    autoload :Base, 'slimi/filters/base'
     autoload :Control, 'slimi/filters/control'
     autoload :DoInserter, 'slimi/filters/do_inserter'
     autoload :Embedded, 'slimi/filters/embedded'

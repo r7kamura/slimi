@@ -2,8 +2,8 @@
 
 module Slimi
   module Filters
-    # Handle `[:slim, :output, escape, code, multi]`.
-    class Output < ::Temple::HTML::Filter
+    # Handle `[:slimi, :output, escape, code, multi]`.
+    class Output < Base
       define_options :disable_capture
 
       IF_REGEXP = /\A(if|unless)\b|\bdo\s*(\|[^|]*\|)?\s*$/.freeze
@@ -12,7 +12,7 @@ module Slimi
       # @param [String] code
       # @param [Array] multi
       # @return [Array]
-      def on_slim_output(escape, code, multi)
+      def on_slimi_output(escape, code, multi)
         if code.match?(IF_REGEXP)
           tmp = unique_name
           [
