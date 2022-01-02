@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.5.1 - 2022-01-02
+
 ### Changed
 
 - Wrap slim attrvalue by slimi position expression.
