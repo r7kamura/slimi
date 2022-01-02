@@ -2,7 +2,7 @@
 
 module Slimi
   module Filters
-    # Handle `[:slim, :output, escape, code, multi]`.
+    # Handle `[:slimi, :output, escape, code, multi]`.
     class Output < ::Temple::HTML::Filter
       define_options :disable_capture
 
@@ -12,7 +12,7 @@ module Slimi
       # @param [String] code
       # @param [Array] multi
       # @return [Array]
-      def on_slim_output(escape, code, multi)
+      def on_slimi_output(escape, code, multi)
         if code.match?(IF_REGEXP)
           tmp = unique_name
           [

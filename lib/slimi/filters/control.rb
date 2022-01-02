@@ -2,12 +2,12 @@
 
 module Slimi
   module Filters
-    # Handle `[:slim, :control, code, multi]`.
+    # Handle `[:slimi, :control, code, multi]`.
     class Control < ::Temple::HTML::Filter
       # @param [String] code
       # @param [Array] multi
       # @return [Array]
-      def on_slim_control(code, multi)
+      def on_slimi_control(code, multi)
         [
           :multi,
           [:code, code],

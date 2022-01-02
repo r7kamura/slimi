@@ -2,12 +2,12 @@
 
 module Slimi
   module Filters
-    # Handle `[:slim, :text, multi]`.
+    # Handle `[:slimi, :text, multi]`.
     class Text < ::Temple::HTML::Filter
       # @param [Symbol] _type
       # @param [Array] multi
       # @return [Array]
-      def on_slim_text(_type, multi)
+      def on_slimi_text(_type, multi)
         compile(multi)
       end
     end

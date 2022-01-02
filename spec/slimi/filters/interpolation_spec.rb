@@ -12,12 +12,12 @@ RSpec.describe Slimi::Filters::Interpolation do
 
     context 'with :slimi :interpolate node' do
       let(:node) do
-        [:multi, [:slim, :text, :verbatim, [:multi, [:slimi, :interpolate, 2, 6, '#{a}']]], [:newline]]
+        [:multi, [:slimi, :text, :verbatim, [:multi, [:slimi, :interpolate, 2, 6, '#{a}']]], [:newline]]
       end
 
       it 'converts it into :multi nodes' do
         is_expected.to eq(
-          [:multi, [:slim, :text, :verbatim, [:multi, [:multi, [:slimi, :position, 4, 5, [:slim, :output, false, 'a', [:multi]]]]]], [:newline]]
+          [:multi, [:slimi, :text, :verbatim, [:multi, [:multi, [:slimi, :position, 4, 5, [:slimi, :output, false, 'a', [:multi]]]]]], [:newline]]
         )
       end
     end

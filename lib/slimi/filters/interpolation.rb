@@ -47,7 +47,7 @@ module Slimi
             else
               escape = false
             end
-            block << [:slimi, :position, begin2, begin2 + code.length, [:slim, :output, escape, code, [:multi]]]
+            block << [:slimi, :position, begin2, begin2 + code.length, [:slimi, :output, escape, code, [:multi]]]
           elsif (value = scanner.scan(/([#\\]?[^#\\]*([#\\][^\\\#{][^#\\]*)*)/)) # rubocop:disable Lint/DuplicateBranch
             block << [:static, value]
           end

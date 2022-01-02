@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Rename expression name from slim to slimi.
+
 ## 0.5.1 - 2022-01-02
 
 ### Changed

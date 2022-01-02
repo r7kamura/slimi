@@ -49,7 +49,7 @@ module Slimi
 
         # @return [Boolean]
         def control?
-          @expression[0] == :slim && @expression[1] == :control
+          @expression[0] == :slimi && @expression[1] == :control
         end
 
         # @return [Boolean]
