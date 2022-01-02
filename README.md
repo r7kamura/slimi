@@ -57,3 +57,4 @@ gem 'slimi'
     - [ ] CLI tools
 - Slimi-only features
     - [x] Embedded Ruby code location
+    - [x] annotate_rendered_view_with_filenames

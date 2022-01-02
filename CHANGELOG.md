@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Support annotate_rendered_view_with_filenames.
+
 ### Changed
 
 - Rename expression name from slim to slimi.

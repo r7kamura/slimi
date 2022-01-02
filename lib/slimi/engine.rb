@@ -28,6 +28,7 @@ module Slimi
     use Filters::Attribute
     use(:AttributeRemover) { ::Temple::HTML::AttributeRemover.new(remove_empty_attrs: options[:merge_attrs].keys) }
     html :Pretty
+    use Filters::Amble
     filter :Escapable
     filter :ControlFlow
     filter :MultiFlattener

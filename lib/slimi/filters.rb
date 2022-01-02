@@ -2,6 +2,7 @@
 
 module Slimi
   module Filters
+    autoload :Amble, 'slimi/filters/amble'
     autoload :Attribute, 'slimi/filters/attribute'
     autoload :Base, 'slimi/filters/base'
     autoload :Control, 'slimi/filters/control'

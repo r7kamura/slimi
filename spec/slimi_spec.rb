@@ -158,4 +158,23 @@ RSpec.describe Slimi do
       )
     end
   end
+
+  context 'with preamble and postamble options' do
+    before do
+      template_options[:preamble] = '1'
+      template_options[:postamble] = '3'
+    end
+
+    let(:source) do
+      <<~'SLIM'
+        | 2
+      SLIM
+    end
+
+    it 'returns expected HTML' do
+      is_expected.to eq(
+        '123'
+      )
+    end
+  end
 end
