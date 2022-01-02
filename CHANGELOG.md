@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.6.0 - 2022-01-03
+
 ### Added
 
 - Support annotate_rendered_view_with_filenames.
