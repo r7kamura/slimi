@@ -3,7 +3,11 @@
 module Slimi
   class RailsTemplateHandler
     def initialize
-      @engine = Engine.new
+      @engine = Engine.new(
+        generator: ::Temple::Generators::RailsOutputBuffer,
+        streaming: true,
+        use_html_safe: true
+      )
     end
 
     def call(template, source = nil)

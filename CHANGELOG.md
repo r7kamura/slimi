@@ -9,6 +9,7 @@
 ### Fixed
 
 - Fix bug at registering handler to ActionView.
+- Fix Engine options at RailsTemplateHandler.
 
 ## 0.5.1 - 2022-01-02
 
