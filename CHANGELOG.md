@@ -6,6 +6,10 @@
 
 - Rename expression name from slim to slimi.
 
+### Fixed
+
+- Fix bug at registering handler to ActionView.
+
 ## 0.5.1 - 2022-01-02
 
 ### Changed
