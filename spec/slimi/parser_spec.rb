@@ -249,7 +249,7 @@ RSpec.describe Slimi::Parser do
 
       it 'returns expected s-expression' do
         is_expected.to eq(
-          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:slimi, :position, 3, 4, [:slim, :attrvalue, true, 'a']]]], [:multi, [:newline]]]]
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:slimi, :position, 10, 11, [:slim, :attrvalue, true, 'a']]]], [:multi, [:newline]]]]
         )
       end
     end
@@ -263,7 +263,7 @@ RSpec.describe Slimi::Parser do
 
       it 'returns expected s-expression' do
         is_expected.to eq(
-          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:slimi, :position, 3, 7, [:slim, :attrvalue, true, 'a(b)']]]], [:multi, [:newline]]]]
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:slimi, :position, 10, 14, [:slim, :attrvalue, true, 'a(b)']]]], [:multi, [:newline]]]]
         )
       end
     end
