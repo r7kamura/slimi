@@ -30,6 +30,14 @@ module Slimi
         [:slimi, :output, escape, code, compile(expression)]
       end
 
+      # @param [Integer] begin_
+      # @param [Integer] end_
+      # @param [Array] expression
+      # @return [Array]
+      def on_slimi_position(begin_, end_, expression)
+        [:slimi, :position, begin_, end_, compile(expression)]
+      end
+
       # @param [String] type
       # @param [Array] expression
       # @return [Array]

@@ -10,6 +10,7 @@
 
 - Remove preceding white spaces from HTML comment.
 - Fix bug that :generator option was not working.
+- Fix bug that Ruby code in nested line can be problem on compilation.
 
 ## 0.6.0 - 2022-01-03
 
