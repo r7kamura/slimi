@@ -3,6 +3,7 @@ PATH
   specs:
     slimi (0.6.0)
       temple
+      thor
       tilt
 
 GEM
@@ -74,6 +75,7 @@ GEM
       rubocop (~> 1.19)
     ruby-progressbar (1.11.0)
     temple (0.8.2)
+    thor (1.1.0)
     tilt (2.0.10)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)

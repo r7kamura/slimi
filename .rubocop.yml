@@ -28,8 +28,7 @@ RSpec/NamedSubject:
   Enabled: false
 
 Security/Eval:
-  Exclude:
-    - 'spec/**/*.rb'
+  Enabled: false
 
 Style/Documentation:
   Enabled: false
