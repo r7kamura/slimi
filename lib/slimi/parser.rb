@@ -332,7 +332,7 @@ module Slimi
 
     # @return [Boolean]
     def parse_html_comment
-      if @scanner.skip(%r{/!})
+      if @scanner.skip(%r{/![ \t]*})
         text_block = parse_text_block
         text = [:slimi, :text, :verbatim, text_block]
         @stacks.last << [:html, :comment, text]

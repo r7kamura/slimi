@@ -6,6 +6,10 @@
 
 - Add `slimi` executable.
 
+### Fixed
+
+- Remove preceding white spaces from HTML comment.
+
 ## 0.6.0 - 2022-01-03
 
 ### Added

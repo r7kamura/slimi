@@ -106,7 +106,7 @@ RSpec.describe Slimi::Parser do
 
       it 'returns expected s-expression' do
         is_expected.to eq(
-          [:multi, [:html, :comment, [:slimi, :text, :verbatim, [:multi, [:slimi, :interpolate, 2, 4, ' a']]]], [:newline]]
+          [:multi, [:html, :comment, [:slimi, :text, :verbatim, [:multi, [:slimi, :interpolate, 3, 4, 'a']]]], [:newline]]
         )
       end
     end
