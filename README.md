@@ -25,6 +25,20 @@ gem 'slimi'
 
 This will cause `app/views/**/*.slim` files to be rendered by Slimi.
 
+### CLI
+
+This gem provides `slimi` executable.
+
+```console
+$ slimi --help
+Commands:
+  slimi compile         # Convert Slim into Ruby
+  slimi erb             # Convert Slim into ERB
+  slimi help [COMMAND]  # Describe available commands or one specific command
+  slimi parse           # Convert Slim into Temple expression
+  slimi render          # Convert Slim into HTML
+```
+
 ## Compatibility
 
 - Line indicators
