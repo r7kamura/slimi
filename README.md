@@ -27,7 +27,7 @@ This will cause `app/views/**/*.slim` files to be rendered by Slimi.
 
 ### CLI
 
-This gem provides `slimi` executable.
+Slimi can be tested from command line by `slimi` executable:
 
 ```console
 $ slimi --help
