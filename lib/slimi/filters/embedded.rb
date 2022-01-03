@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'tilt'
+
 module Slimi
   module Filters
     # @api private
