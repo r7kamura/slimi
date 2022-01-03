@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.0 - 2022-01-04
+
 ### Added
 
 - Add `slimi` executable.
