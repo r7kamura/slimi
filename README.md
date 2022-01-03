@@ -27,7 +27,7 @@ This will cause `app/views/**/*.slim` files to be rendered by Slimi.
 
 ### CLI
 
-Slimi can be tested from command line by `slimi` executable:
+Slimi can be tested from command line by `slimi` executable. This takes Slim code from STDIN and converts it into another form.
 
 ```console
 $ slimi --help
