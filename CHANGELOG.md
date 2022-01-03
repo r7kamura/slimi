@@ -9,6 +9,7 @@
 ### Fixed
 
 - Remove preceding white spaces from HTML comment.
+- Fix bug that :generator option was not working.
 
 ## 0.6.0 - 2022-01-03
 

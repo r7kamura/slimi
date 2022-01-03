@@ -34,6 +34,6 @@ module Slimi
     filter :ControlFlow
     filter :MultiFlattener
     filter :StaticMerger
-    generator :StringBuffer
+    use(:Generator) { options[:generator] }
   end
 end

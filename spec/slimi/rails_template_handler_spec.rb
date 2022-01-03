@@ -36,9 +36,13 @@ RSpec.describe Slimi::RailsTemplateHandler do
       )
     end
 
+    let(:output_buffer) do
+      nil
+    end
+
     context 'with valid condition' do
       it 'returns Ruby code that returns expected String' do
-        result = eval(subject)
+        result = eval(subject, binding)
         expect(result).to eq('a')
       end
     end
@@ -49,7 +53,7 @@ RSpec.describe Slimi::RailsTemplateHandler do
       end
 
       it 'returns Ruby code that returns expected String' do
-        result = eval(subject)
+        result = eval(subject, binding)
         expect(result).to eq(<<~HTML)
           <!-- BEGIN dummy.slim -->
           a<!-- END dummy.slim -->
