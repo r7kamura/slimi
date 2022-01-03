@@ -57,8 +57,11 @@ This will cause `app/views/**/*.slim` files to be rendered by Slimi.
     - [ ] Translator/I18n
     - [ ] Logic-less mode
     - [ ] Smart text mode
-- Etc.
-    - [ ] CLI tools
+- CLI
+    - [x] Convert Slim to Ruby
+    - [x] Convert Slim to HTML
+    - [ ] Convert Slim to ERB
 - Slimi-only features
     - [x] Embedded Ruby code location
     - [x] Support for annotate_rendered_view_with_filenames
+    - [x] Convert Slim to Temple expression by CLI

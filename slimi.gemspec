@@ -32,5 +32,6 @@ Gem::Specification.new do |spec|
   }
 
   spec.add_dependency 'temple'
+  spec.add_dependency 'thor'
   spec.add_dependency 'tilt'
 end
