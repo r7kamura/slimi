@@ -3,7 +3,7 @@
 require 'temple'
 
 module Slimi
-  # Convert Slim code into Ruby code.
+  # Convert Slim into Ruby.
   class Engine < ::Temple::Engine
     define_options(
       attr_quote: '"',
@@ -16,9 +16,9 @@ module Slimi
     )
 
     use Parser
-    use Filters::Unposition
     use Filters::Embedded
     use Filters::Interpolation
+    use Filters::Unposition
     use Filters::DoInserter
     use Filters::EndInserter
     use Filters::Control

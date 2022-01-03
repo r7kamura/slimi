@@ -5,6 +5,7 @@ require_relative 'slimi/version'
 module Slimi
   autoload :Cli, 'slimi/cli'
   autoload :Engine, 'slimi/engine'
+  autoload :ErbConverter, 'slimi/erb_converter'
   autoload :Errors, 'slimi/errors'
   autoload :Filters, 'slimi/filters'
   autoload :Parser, 'slimi/parser'

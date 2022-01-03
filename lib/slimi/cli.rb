@@ -12,6 +12,13 @@ module Slimi
       puts ruby
     end
 
+    desc 'erb', 'Convert Slim into ERB'
+    def erb
+      slim = $stdin.read
+      expression = ErbConverter.new.call(slim)
+      puts expression
+    end
+
     desc 'parse', 'Convert Slim into Temple expression'
     def parse
       slim = $stdin.read

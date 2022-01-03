@@ -60,7 +60,7 @@ This will cause `app/views/**/*.slim` files to be rendered by Slimi.
 - CLI
     - [x] Convert Slim to Ruby
     - [x] Convert Slim to HTML
-    - [ ] Convert Slim to ERB
+    - [x] Convert Slim to ERB
 - Slimi-only features
     - [x] Embedded Ruby code location
     - [x] Support for annotate_rendered_view_with_filenames
