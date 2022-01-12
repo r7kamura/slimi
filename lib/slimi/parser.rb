@@ -473,7 +473,7 @@ module Slimi
 
     # @raise
     def expect_line_ending
-      parse_line_ending || @scanner.eos? || syntax_error!(LineEndingNotFoundError)
+      parse_line_ending || @scanner.eos? || syntax_error!(Errors::LineEndingNotFoundError)
     end
 
     # @return [Integer] Indent level.
