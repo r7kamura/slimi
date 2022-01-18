@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fix error handling on unexpected line ending.
+- Fix missing some metadata in gemspec.
 
 ## 0.7.0 - 2022-01-04
 
