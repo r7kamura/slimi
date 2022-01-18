@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.1 - 2022-01-18
+
 ### Fixed
 
 - Fix error handling on unexpected line ending.
