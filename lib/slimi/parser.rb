@@ -578,7 +578,7 @@ module Slimi
 
     # Convert human-friendly options into machine-friendly objects.
     class Factory
-      EMBEDDED_TEMPLAE_ENGINE_NAMES = %w[
+      EMBEDDED_TEMPLATE_ENGINE_NAMES = %w[
         coffee
         css
         javascript
@@ -667,7 +667,7 @@ module Slimi
 
       # @return [Regexp]
       def embedded_template_regexp
-        /(#{::Regexp.union(EMBEDDED_TEMPLAE_ENGINE_NAMES)})(?:[ \t]*(?:(.*)))?:([ \t]*)/
+        /(#{::Regexp.union(EMBEDDED_TEMPLATE_ENGINE_NAMES)})(?:[ \t]*(?:(.*)))?:([ \t]*)/
       end
 
       # @return [Regexp]
