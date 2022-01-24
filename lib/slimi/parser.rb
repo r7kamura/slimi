@@ -77,7 +77,7 @@ module Slimi
     # Parse blank line.
     # @return [Boolean] True if it could parse a blank line.
     def parse_blank_line
-      if @scanner.skip(/[ \t]*$/)
+      if @scanner.skip(/[ \t]*(?=\R|$)/)
         parse_line_ending
         true
       else

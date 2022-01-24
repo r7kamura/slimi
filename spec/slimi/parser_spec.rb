@@ -459,6 +459,18 @@ RSpec.describe Slimi::Parser do
       end
     end
 
+    context 'with CR+LF empty line' do
+      let(:source) do
+        "\r\n\r\n"
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:newline], [:newline]]
+        )
+      end
+    end
+
     context 'with unknown line indicator' do
       let(:source) do
         <<~'SLIM'
