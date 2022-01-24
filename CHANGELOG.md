@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.2 - 2022-01-24
+
 ### Fixed
 
 - Fix parser bug at CR+LF empty line.
