@@ -459,6 +459,18 @@ RSpec.describe Slimi::Parser do
       end
     end
 
+    context 'with CR+LF with code block' do
+      let(:source) do
+        "- a\r\n"
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:slimi, :position, 2, 3, [:slimi, :control, 'a', [:multi, [:newline]]]]]
+        )
+      end
+    end
+
     context 'with CR+LF empty line' do
       let(:source) do
         "\r\n\r\n"

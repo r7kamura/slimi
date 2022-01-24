@@ -138,7 +138,7 @@ module Slimi
         @stacks.last << tag
         @stacks.last << [:static, ' '] if with_trailing_white_space
 
-        if @scanner.skip(/[ \t]*$/)
+        if @scanner.skip(/[ \t]*(?=\R|$)/)
           content = [:multi]
           tag << content
           @stacks << content
@@ -255,7 +255,7 @@ module Slimi
         attribute_delimiter_opening = @scanner[1]
         attribute_delimiter_closing = @attribute_delimiters[attribute_delimiter_opening]
         attribute_delimiter_closing_regexp = ::Regexp.escape(attribute_delimiter_closing)
-        boolean_attribute_regexp = /#{@attribute_name_regexp}(?=(?:[ \t]|#{attribute_delimiter_closing_regexp}|$))/
+        boolean_attribute_regexp = /#{@attribute_name_regexp}(?=(?:[ \t]|#{attribute_delimiter_closing_regexp}|(?=\R|$)))/
         attribute_delimiter_closing_part_regexp = /[ \t]*#{attribute_delimiter_closing_regexp}/
       end
 
@@ -320,7 +320,7 @@ module Slimi
             opening_delimiter = @scanner.matched
             closing_delimiter = @ruby_attribute_delimiters[opening_delimiter]
           end
-          if (character = @scanner.scan(/./))
+          if (character = @scanner.scan(/[^\r\n]/))
             attribute_value << character
           end
         end
@@ -361,9 +361,9 @@ module Slimi
 
     # @return [Boolean]
     def parse_slim_comment_block
-      if @scanner.skip(%r{/.*})
-        while !@scanner.eos? && (@scanner.match?(/[ \t]*$/) || peek_indent > @indents.last)
-          @scanner.skip(/.*/)
+      if @scanner.skip(%r{/[^\r\n]*})
+        while !@scanner.eos? && (@scanner.match?(/[ \t]*(?=\R|$)/) || peek_indent > @indents.last)
+          @scanner.skip(/[^\r\n]*/)
           parse_line_ending
         end
         true
@@ -396,7 +396,7 @@ module Slimi
 
     # @return [Boolean]
     def parse_inline_html_inner
-      if @scanner.match?(/<.*/)
+      if @scanner.match?(/<[^\r\n]*/)
         begin_ = @scanner.charpos
         value = @scanner.matched
         @scanner.pos += @scanner.matched_size
@@ -533,7 +533,7 @@ module Slimi
 
     # @return [Array, nil] S-expression if found.
     def parse_interpolate_line
-      return unless @scanner.match?(/.+/)
+      return unless @scanner.match?(/[^\r\n]+/)
 
       begin_ = @scanner.charpos
       value = @scanner.matched
@@ -546,12 +546,12 @@ module Slimi
     # @return [String]
     def parse_broken_lines
       result = +''
-      result << @scanner.scan(/.*/)
+      result << @scanner.scan(/[^\r\n]*/)
       while result.end_with?(',') || result.end_with?('\\')
         syntax_error!(Errors::UnexpectedEosError) unless @scanner.scan(/\r?\n/)
 
         result << "\n"
-        result << @scanner.scan(/.*/)
+        result << @scanner.scan(/[^\r\n]*/)
       end
       result
     end

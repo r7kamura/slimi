@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Fix parser bug that CR is included in some unrelated token.
+
 ## 0.7.2 - 2022-01-24
 
 ### Fixed
