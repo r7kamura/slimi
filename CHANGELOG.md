@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fix parser bug at CR+LF empty line.
+- Fix typo at internal const name.
 
 ## 0.7.1 - 2022-01-18
 
