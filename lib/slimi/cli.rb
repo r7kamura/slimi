@@ -23,7 +23,7 @@ module Slimi
     def parse
       slim = $stdin.read
       expression = Parser.new.call(slim)
-      pp expression
+      pp expression # rubocop:disable Lint/Debugger
     end
 
     desc 'render', 'Convert Slim into HTML'
