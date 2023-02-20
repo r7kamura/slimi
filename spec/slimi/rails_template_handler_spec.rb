@@ -21,7 +21,7 @@ RSpec.describe Slimi::RailsTemplateHandler do
     end
 
     let(:source) do
-      <<~'SLIM'
+      <<~SLIM
         | a
       SLIM
     end
