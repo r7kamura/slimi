@@ -242,7 +242,7 @@ RSpec.describe Slimi::Parser do
 
     context 'with Ruby attribute' do
       let(:source) do
-        <<~'SLIM'
+        <<~SLIM
           div class=a
         SLIM
       end
@@ -256,7 +256,7 @@ RSpec.describe Slimi::Parser do
 
     context 'with Ruby attribute with parentheses' do
       let(:source) do
-        <<~'SLIM'
+        <<~SLIM
           div class=a(b)
         SLIM
       end
@@ -270,7 +270,7 @@ RSpec.describe Slimi::Parser do
 
     context 'with multi-line attribute' do
       let(:source) do
-        <<~'SLIM'
+        <<~SLIM
           div[
             class="a"
           ]
@@ -286,7 +286,7 @@ RSpec.describe Slimi::Parser do
 
     context 'with multi-line attribute and missing attribute closing delimiter' do
       let(:source) do
-        <<~'SLIM'
+        <<~SLIM
           div[
             class="a"
         SLIM
@@ -411,7 +411,7 @@ RSpec.describe Slimi::Parser do
 
     context 'with embedded template' do
       let(:source) do
-        <<~'SLIM'
+        <<~SLIM
           ruby:
             1
         SLIM
@@ -426,7 +426,7 @@ RSpec.describe Slimi::Parser do
 
     context 'with empty line between nested lines' do
       let(:source) do
-        <<~'SLIM'
+        <<~SLIM
           div
             div
               div
@@ -444,7 +444,7 @@ RSpec.describe Slimi::Parser do
 
     context 'with empty line between embedded template' do
       let(:source) do
-        <<~'SLIM'
+        <<~SLIM
           javascript:
             a
 
@@ -485,7 +485,7 @@ RSpec.describe Slimi::Parser do
 
     context 'with unknown line indicator' do
       let(:source) do
-        <<~'SLIM'
+        <<~SLIM
           $
         SLIM
       end

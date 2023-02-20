@@ -493,7 +493,7 @@ module Slimi
         else
           0
         end
-      end.sum(0)
+      end.sum
     end
 
     # @return [Boolean]

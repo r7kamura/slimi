@@ -18,7 +18,7 @@ RSpec.describe Slimi do
   [
     [
       'tag with content',
-      <<~'SLIM',
+      <<~SLIM,
         p a
       SLIM
       <<~HTML
@@ -27,7 +27,7 @@ RSpec.describe Slimi do
     ],
     [
       'tag without content',
-      <<~'SLIM',
+      <<~SLIM,
         p
       SLIM
       <<~HTML
@@ -36,7 +36,7 @@ RSpec.describe Slimi do
     ],
     [
       'tag with indented content',
-      <<~'SLIM',
+      <<~SLIM,
         p
           | a
       SLIM
@@ -46,7 +46,7 @@ RSpec.describe Slimi do
     ],
     [
       'double quote in output',
-      <<~'SLIM',
+      <<~SLIM,
         = '"'
       SLIM
       <<~HTML
@@ -55,7 +55,7 @@ RSpec.describe Slimi do
     ],
     [
       'single quote in output',
-      <<~'SLIM',
+      <<~SLIM,
         = "'"
       SLIM
       <<~HTML
@@ -64,7 +64,7 @@ RSpec.describe Slimi do
     ],
     [
       'shortcut attribute',
-      <<~'SLIM',
+      <<~SLIM,
         div.a
       SLIM
       <<~HTML
@@ -73,7 +73,7 @@ RSpec.describe Slimi do
     ],
     [
       'shortcut attribute without tag',
-      <<~'SLIM',
+      <<~SLIM,
         .a
       SLIM
       <<~HTML
@@ -82,7 +82,7 @@ RSpec.describe Slimi do
     ],
     [
       'code attribute',
-      <<~'SLIM',
+      <<~SLIM,
         div a=1+1
       SLIM
       <<~HTML
@@ -91,7 +91,7 @@ RSpec.describe Slimi do
     ],
     [
       'Array code attribute with mergable attribute name',
-      <<~'SLIM',
+      <<~SLIM,
         div class=(%w[a b c])
       SLIM
       <<~HTML
@@ -100,7 +100,7 @@ RSpec.describe Slimi do
     ],
     [
       'do-less control',
-      <<~'SLIM',
+      <<~SLIM,
         - 2.times
           | a
       SLIM
@@ -110,7 +110,7 @@ RSpec.describe Slimi do
     ],
     [
       'do-less output',
-      <<~'SLIM',
+      <<~SLIM,
         = 'foo'.gsub(/o/)
           | a
       SLIM
@@ -120,7 +120,7 @@ RSpec.describe Slimi do
     ],
     [
       'end-less if',
-      <<~'SLIM',
+      <<~SLIM,
         - if true
           | a
       SLIM
@@ -147,7 +147,7 @@ RSpec.describe Slimi do
     end
 
     let(:source) do
-      <<~'SLIM'
+      <<~SLIM
         = '"'
       SLIM
     end
@@ -166,7 +166,7 @@ RSpec.describe Slimi do
     end
 
     let(:source) do
-      <<~'SLIM'
+      <<~SLIM
         | 2
       SLIM
     end
