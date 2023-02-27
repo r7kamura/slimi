@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fix parser bug that CR is included in some unrelated token.
+- Fix wrong signature error on embedded filter.
 
 ## 0.7.2 - 2022-01-24
 
