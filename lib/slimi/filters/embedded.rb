@@ -12,7 +12,7 @@ module Slimi
         @collected
       end
 
-      def on_slimi_interpolate(text)
+      def on_slimi_interpolate(_, _, text)
         @collected << text
         nil
       end
