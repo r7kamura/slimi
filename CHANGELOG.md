@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.3 - 2023-02-27
+
 ### Fixed
 
 - Fix parser bug that CR is included in some unrelated token.
