@@ -7,7 +7,7 @@ module Slimi
     # @api private
     class TextCollector < Base
       def call(exp)
-        @collected = ''
+        @collected = +''
         super(exp)
         @collected
       end
@@ -36,7 +36,7 @@ module Slimi
     class OutputProtector < Base
       def call(exp)
         @protect = []
-        @collected = ''
+        @collected = +''
         @tag = "%#{object_id.abs.to_s(36)}%"
         super(exp)
         @collected
