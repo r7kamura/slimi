@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.4 - 2023-03-22
+
 ### Fixed
 
 - Fix FrozenError on Embedded filter.
