@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.5 - 2024-07-25
+
 ### Fixed
 
 - Fix position bug on non-escaped interpolation.
