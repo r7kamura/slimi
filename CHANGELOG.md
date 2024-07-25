@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+- Fix position bug on non-escaped interpolation.
+- Fix backslash escape bug.
+
 ## 0.7.4 - 2023-03-22
 
 ### Fixed
