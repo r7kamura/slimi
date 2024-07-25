@@ -8,7 +8,7 @@ module Slimi
     class TextCollector < Base
       def call(exp)
         @collected = +''
-        super(exp)
+        super
         @collected
       end
 
@@ -22,7 +22,7 @@ module Slimi
     class NewlineCollector < Base
       def call(exp)
         @collected = [:multi]
-        super(exp)
+        super
         @collected
       end
 
@@ -38,7 +38,7 @@ module Slimi
         @protect = []
         @collected = +''
         @tag = "%#{object_id.abs.to_s(36)}%"
-        super(exp)
+        super
         @collected
       end
 
