@@ -18,6 +18,9 @@ Metrics:
 RSpec/AnyInstance:
   Enabled: false
 
+RSpec/ExampleLength:
+  Enabled: false
+
 RSpec/ImplicitSubject:
   Enabled: false
 
