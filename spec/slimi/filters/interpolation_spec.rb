@@ -21,5 +21,17 @@ RSpec.describe Slimi::Filters::Interpolation do
         )
       end
     end
+
+    context 'with non-escaped :slimi :interpolate node' do
+      let(:node) do
+        [:multi, [:slimi, :text, :verbatim, [:multi, [:slimi, :interpolate, 2, 8, '#{{a}}']]], [:newline]]
+      end
+
+      it 'converts it into :multi nodes' do
+        is_expected.to eq(
+          [:multi, [:slimi, :text, :verbatim, [:multi, [:multi, [:slimi, :position, 5, 6, [:slimi, :output, true, 'a', [:multi]]]]]], [:newline]]
+        )
+      end
+    end
   end
 end

@@ -21,7 +21,7 @@ module Slimi
             if code.start_with?('{') && code.end_with?('}')
               escape = true
               code = code[1..-2]
-              begin2 -= 1
+              begin2 += 1
             else
               escape = false
             end
