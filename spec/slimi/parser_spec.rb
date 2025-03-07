@@ -97,6 +97,7 @@ RSpec.describe Slimi::Parser do
       end
     end
 
+    # rubocop:disable Layout/TrailingWhitespace, Layout/FirstArgumentIndentation
     context 'with output code with comma followed by space for line continuation' do
       let(:source) do
         <<~SLIM
@@ -111,6 +112,7 @@ RSpec.describe Slimi::Parser do
                        )
       end
     end
+    # rubocop:enable Layout/TrailingWhitespace, Layout/FirstArgumentIndentation
 
     context 'with HTML comment' do
       let(:source) do
