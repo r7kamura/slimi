@@ -97,6 +97,23 @@ RSpec.describe Slimi::Parser do
       end
     end
 
+    # rubocop:disable Layout/TrailingWhitespace
+    context 'with output code with comma followed by space for line continuation' do
+      let(:source) do
+        <<~SLIM
+          = label_tag :label, 
+            "Label"
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:slimi, :position, 2, 30, [:slimi, :output, true, "label_tag :label, \n  \"Label\"", [:multi, [:newline]]]]]
+        )
+      end
+    end
+    # rubocop:enable Layout/TrailingWhitespace
+
     context 'with HTML comment' do
       let(:source) do
         <<~SLIM

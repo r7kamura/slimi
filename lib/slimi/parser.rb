@@ -547,7 +547,7 @@ module Slimi
     def parse_broken_lines
       result = +''
       result << @scanner.scan(/[^\r\n]*/)
-      while result.end_with?(',') || result.end_with?('\\')
+      while result.rstrip.end_with?(',') || result.rstrip.end_with?('\\')
         syntax_error!(Errors::UnexpectedEosError) unless @scanner.scan(/\r?\n/)
 
         result << "\n"
