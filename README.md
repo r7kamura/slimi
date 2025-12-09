@@ -1,8 +1,5 @@
 # Slimi
 
-[![test](https://github.com/r7kamura/slimi/actions/workflows/test.yml/badge.svg)](https://github.com/r7kamura/slimi/actions/workflows/test.yml)
-[![](https://badge.fury.io/rb/slimi.svg)](https://rubygems.org/gems/slimi)
-
 Yet another implementation for [Slim](https://github.com/slim-template/slim) template language.
 
 ## Introduction
