@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    slimi (0.7.7)
+    slimi (0.7.8)
       temple
       thor
       tilt
