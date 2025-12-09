@@ -11,4 +11,25 @@ permissions:
 
 jobs:
   release:
-    uses: r7kamura/workflows/.github/workflows/gem-release.yml@gem-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+      - id: detect-new-version
+        uses: salsify/action-detect-and-tag-new-version@v2
+        with:
+          version-command: |
+            cat "$(find lib -name version.rb)" | grep VERSION | cut -d "'" -f 2
+      - if: ${{ steps.detect-new-version.outputs.tag }}
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          ruby-version: ruby
+      - if: ${{ steps.detect-new-version.outputs.tag }}
+        uses: rubygems/release-gem@v1
+      - if: ${{ steps.detect-new-version.outputs.tag }}
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          tag_name: ${{ steps.detect-new-version.outputs.tag }}
