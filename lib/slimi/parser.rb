@@ -320,9 +320,10 @@ module Slimi
             opening_delimiter = @scanner.matched
             closing_delimiter = @ruby_attribute_delimiters[opening_delimiter]
           end
-          if (character = @scanner.scan(/[^\r\n]/))
-            attribute_value << character
-          end
+          character = @scanner.scan(/[^\r\n]/)
+          break unless character
+
+          attribute_value << character
         end
       end
       syntax_error!(Errors::RubyAttributeClosingDelimiterNotFoundError) if count != 0

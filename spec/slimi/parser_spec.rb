@@ -271,6 +271,18 @@ RSpec.describe Slimi::Parser do
       end
     end
 
+    context 'with Ruby attribute without trailing newline' do
+      let(:source) do
+        'div class=a'
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:slimi, :position, 10, 11, [:slimi, :attrvalue, true, 'a']]]], [:multi]]]
+        )
+      end
+    end
+
     context 'with Ruby attribute with parentheses' do
       let(:source) do
         <<~SLIM
