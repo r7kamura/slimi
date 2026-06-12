@@ -62,5 +62,14 @@ module Slimi
 
     class UnknownLineIndicatorError < SlimSyntaxError
     end
+
+    class RenderError < BaseError
+    end
+
+    class InvalidAttributeNameError < RenderError
+    end
+
+    class MultipleAttributesError < RenderError
+    end
   end
 end

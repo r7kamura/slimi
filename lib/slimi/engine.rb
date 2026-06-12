@@ -24,6 +24,7 @@ module Slimi
     use Filters::Control
     use Filters::Output
     use Filters::Text
+    use Filters::Splat
     html :AttributeSorter
     html :AttributeMerger
     use Filters::Attribute
