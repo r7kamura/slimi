@@ -127,6 +127,124 @@ RSpec.describe Slimi do
       <<~HTML
         a
       HTML
+    ],
+    [
+      'splat attribute with hash literal',
+      <<~SLIM,
+        div *{ "id" => "foo", "class" => "bar" }
+      SLIM
+      <<~HTML
+        <div class="bar" id="foo"></div>
+      HTML
+    ],
+    [
+      'splat attribute merged with shortcut and static attributes',
+      <<~SLIM,
+        div.a *{ "class" => "b" } id="x"
+      SLIM
+      <<~HTML
+        <div class="a b" id="x"></div>
+      HTML
+    ],
+    [
+      'splat attribute with boolean values',
+      <<~SLIM,
+        div *{ "disabled" => true, "checked" => false, "name" => nil }
+      SLIM
+      <<~HTML
+        <div disabled=""></div>
+      HTML
+    ],
+    [
+      'splat attribute with value containing special characters',
+      <<~SLIM,
+        div *{ "title" => "a&b" }
+      SLIM
+      <<~HTML
+        <div title="a&amp;b"></div>
+      HTML
+    ],
+    [
+      'splat attribute with escaped sibling attribute',
+      <<~SLIM,
+        div *{ "k" => "v" } id="a&b"
+      SLIM
+      <<~HTML
+        <div id="a&amp;b" k="v"></div>
+      HTML
+    ],
+    [
+      'splat attribute with unescaped sibling attribute',
+      <<~SLIM,
+        div *{ "k" => "v" } id=="<raw>"
+      SLIM
+      <<~HTML
+        <div id="<raw>" k="v"></div>
+      HTML
+    ],
+    [
+      'splat attribute with false and nil sibling attributes',
+      <<~SLIM,
+        div *{ "k" => "v" } data-x=false data-y=nil
+      SLIM
+      <<~HTML
+        <div k="v"></div>
+      HTML
+    ],
+    [
+      'splat attribute with true sibling attribute',
+      <<~SLIM,
+        div *{ "k" => "v" } data-x=true
+      SLIM
+      <<~HTML
+        <div data-x="" k="v"></div>
+      HTML
+    ],
+    [
+      'splat attribute with mergeable array sibling attribute',
+      <<~SLIM,
+        div *{ "k" => "v" } class=["a", "b"]
+      SLIM
+      <<~HTML
+        <div class="a b" k="v"></div>
+      HTML
+    ],
+    [
+      'splat attribute with boolean sibling attribute',
+      <<~SLIM,
+        div(*{ "k" => "v" } disabled)
+      SLIM
+      <<~HTML
+        <div disabled="" k="v"></div>
+      HTML
+    ],
+    [
+      'splat attribute with nested hash value',
+      <<~SLIM,
+        div *{ "data" => { "a" => 1 } }
+      SLIM
+      <<~HTML
+        <div data-a="1"></div>
+      HTML
+    ],
+    [
+      'splat attribute with mergeable array value containing nil and empty values',
+      <<~SLIM,
+        div *{ "class" => [nil, "a", ""] }
+      SLIM
+      <<~HTML
+        <div class="a"></div>
+      HTML
+    ],
+    [
+      'splat attribute on a tag after a tag with mergeable attribute',
+      <<~SLIM,
+        div class=["x"]
+        div *{ "k" => "v" } id=[1, 2]
+      SLIM
+      <<~HTML
+        <div class="x"></div><div id="[1, 2]" k="v"></div>
+      HTML
     ]
   ].each do |(name, slim, html)|
     context "with #{name}" do
@@ -155,6 +273,106 @@ RSpec.describe Slimi do
     it 'returns expected HTML' do
       is_expected.to eq(
         '"'
+      )
+    end
+  end
+
+  context 'with splat attribute from a method returning a hash' do
+    subject do
+      scope = Object.new
+      scope.define_singleton_method(:foo) { { 'id' => 'a', 'class' => 'y' } }
+      template.new(template_options) { source }.render(scope)
+    end
+
+    let(:source) do
+      <<~SLIM
+        div.x *foo class="z"
+      SLIM
+    end
+
+    it 'returns expected HTML' do
+      is_expected.to eq(
+        '<div class="x y z" id="a"></div>'
+      )
+    end
+  end
+
+  context 'with splat attribute producing an invalid attribute name' do
+    let(:source) do
+      <<~SLIM
+        div *{ "a b" => "c" }
+      SLIM
+    end
+
+    it 'raises an error at render time' do
+      expect { subject }.to raise_error(Slimi::Errors::InvalidAttributeNameError)
+    end
+  end
+
+  context 'with splat attribute conflicting with an unmergeable attribute' do
+    let(:source) do
+      <<~SLIM
+        div id="x" *{ "id" => "y" }
+      SLIM
+    end
+
+    it 'raises an error at render time' do
+      expect { subject }.to raise_error(Slimi::Errors::MultipleAttributesError)
+    end
+  end
+
+  context 'with splat attribute and boolean sibling attribute in html format' do
+    before do
+      template_options[:format] = :html
+    end
+
+    let(:source) do
+      <<~SLIM
+        div(*{ "k" => "v" } disabled)
+      SLIM
+    end
+
+    it 'returns expected HTML' do
+      is_expected.to eq(
+        '<div disabled k="v"></div>'
+      )
+    end
+  end
+
+  context 'with splat attribute with html_safe value' do
+    before do
+      template_options[:use_html_safe] = true
+      allow_any_instance_of(String).to receive(:html_safe?).and_return(true)
+    end
+
+    let(:source) do
+      <<~SLIM
+        div *{ "title" => "a&b" }
+      SLIM
+    end
+
+    it 'returns expected HTML' do
+      is_expected.to eq(
+        '<div title="a&b"></div>'
+      )
+    end
+  end
+
+  context 'with splat attribute with html_safe value and disabled use_html_safe option' do
+    before do
+      template_options[:use_html_safe] = false
+      allow_any_instance_of(String).to receive(:html_safe?).and_return(true)
+    end
+
+    let(:source) do
+      <<~SLIM
+        div *{ "title" => "a&b" }
+      SLIM
+    end
+
+    it 'returns expected HTML' do
+      is_expected.to eq(
+        '<div title="a&amp;b"></div>'
       )
     end
   end

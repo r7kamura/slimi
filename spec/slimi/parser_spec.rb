@@ -512,6 +512,74 @@ RSpec.describe Slimi::Parser do
       end
     end
 
+    context 'with splat attribute' do
+      let(:source) do
+        <<~SLIM
+          div *foo
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:slimi, :position, 5, 8, [:slimi, :splat, 'foo']]], [:multi, [:newline]]]]
+        )
+      end
+    end
+
+    context 'with splat attribute with hash literal' do
+      let(:source) do
+        <<~SLIM
+          div *{ "a" => "b" }
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:slimi, :position, 5, 19, [:slimi, :splat, '{ "a" => "b" }']]], [:multi, [:newline]]]]
+        )
+      end
+    end
+
+    context 'with splat attribute mixed with other attributes' do
+      let(:source) do
+        <<~SLIM
+          div.static *foo id="x"
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:html, :attr, 'class', [:static, 'static']], [:slimi, :position, 12, 15, [:slimi, :splat, 'foo']], [:html, :attr, 'id', [:escape, true, [:slimi, :interpolate, 20, 21, 'x']]]], [:multi, [:newline]]]]
+        )
+      end
+    end
+
+    context 'with splat attribute inside delimiters' do
+      let(:source) do
+        <<~SLIM
+          div(*foo id="x")
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'div', [:html, :attrs, [:slimi, :position, 5, 8, [:slimi, :splat, 'foo']], [:html, :attr, 'id', [:escape, true, [:slimi, :interpolate, 13, 14, 'x']]]], [:multi, [:newline]]]]
+        )
+      end
+    end
+
+    context 'with splat attribute without code' do
+      let(:source) do
+        <<~SLIM
+          div(*)
+        SLIM
+      end
+
+      it 'raises expected error' do
+        expect { subject }.to raise_error(Slimi::Errors::InvalidEmptyAttributeError)
+      end
+    end
+
     context 'with unknown line indicator' do
       let(:source) do
         <<~SLIM

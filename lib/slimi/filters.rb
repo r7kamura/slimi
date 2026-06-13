@@ -11,6 +11,7 @@ module Slimi
     autoload :EndInserter, 'slimi/filters/end_inserter'
     autoload :Interpolation, 'slimi/filters/interpolation'
     autoload :Output, 'slimi/filters/output'
+    autoload :Splat, 'slimi/filters/splat'
     autoload :Text, 'slimi/filters/text'
     autoload :Unposition, 'slimi/filters/unposition'
   end

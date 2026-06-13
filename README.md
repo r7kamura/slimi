@@ -62,7 +62,7 @@ Commands:
     - [x] Boolean attributes
     - [x] Attribute merging
     - [x] Attribute shortcuts
-    - [ ] Splat attributes
+    - [x] Splat attributes
 - Plugins
     - [ ] Include partials
     - [ ] Translator/I18n

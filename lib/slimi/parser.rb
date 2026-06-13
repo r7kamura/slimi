@@ -38,6 +38,7 @@ module Slimi
       @attribute_shortcut_regexp = factory.attribute_shortcut_regexp
       @attribute_delimiter_regexp = factory.attribute_delimiter_regexp
       @quoted_attribute_regexp = factory.quoted_attribute_regexp
+      @splat_attribute_regexp = factory.splat_attribute_regexp
       @tag_name_regexp = factory.tag_name_regexp
       @attribute_name_regexp = factory.attribute_name_regexp
       @ruby_attribute_regexp = factory.ruby_attribute_regexp
@@ -259,9 +260,13 @@ module Slimi
         attribute_delimiter_closing_part_regexp = /[ \t]*#{attribute_delimiter_closing_regexp}/
       end
 
-      # TODO: Support splat attributes.
       loop do
-        if @scanner.skip(@quoted_attribute_regexp)
+        if @scanner.skip(@splat_attribute_regexp)
+          charpos = @scanner.charpos
+          code = parse_ruby_attribute_value(attribute_delimiter_closing)
+          syntax_error!(Errors::InvalidEmptyAttributeError) if code.empty?
+          attributes << [:slimi, :position, charpos, charpos + code.length, [:slimi, :splat, code]]
+        elsif @scanner.skip(@quoted_attribute_regexp)
           attribute_name = @scanner[1]
           escape = @scanner[2].empty?
           quote = @scanner[3]
@@ -674,6 +679,11 @@ module Slimi
       # @return [Regexp]
       def quoted_attribute_regexp
         /#{attribute_name_regexp}[ \t]*=(=?)[ \t]*("|')/
+      end
+
+      # @return [Regexp]
+      def splat_attribute_regexp
+        /[ \t]*\*(?=[^\s])/
       end
 
       # @return [Regexp]
