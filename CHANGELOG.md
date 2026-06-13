@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Support splat attributes.
+
 ## 0.7.5 - 2024-07-25
 
 ### Fixed
