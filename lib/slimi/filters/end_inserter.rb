@@ -36,11 +36,11 @@ module Slimi
       end
 
       class Expression
-        IF_REGEXP = /\A(if|begin|unless|else|elsif|when|rescue|ensure)\b|\bdo\s*(\|[^|]*\|)?\s*$/.freeze
+        IF_REGEXP = /\A(if|begin|unless|else|elsif|when|rescue|ensure)\b|\bdo\s*(\|[^|]*\|)?\s*$/
 
-        ELSE_REGEXP = /\A(else|elsif|when|rescue|ensure)\b/.freeze
+        ELSE_REGEXP = /\A(else|elsif|when|rescue|ensure)\b/
 
-        END_REGEXP = /\Aend\b/.freeze
+        END_REGEXP = /\Aend\b/
 
         # @param [Array] expression
         def initialize(expression)

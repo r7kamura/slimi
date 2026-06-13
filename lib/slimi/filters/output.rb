@@ -6,7 +6,7 @@ module Slimi
     class Output < Base
       define_options :disable_capture
 
-      IF_REGEXP = /\A(if|unless)\b|\bdo\s*(\|[^|]*\|)?\s*$/.freeze
+      IF_REGEXP = /\A(if|unless)\b|\bdo\s*(\|[^|]*\|)?\s*$/
 
       # @param [Boolean] escape
       # @param [String] code
