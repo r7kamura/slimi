@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.8.0 - 2026-06-13
+
 - Support splat attributes.
 
 ## 0.7.5 - 2024-07-25
