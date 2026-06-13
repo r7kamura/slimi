@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Change required Ruby version to 3.3 or later.
+- Change required ruby version from 2.6+ to 3.3+.
 
 ## 0.8.0 - 2026-06-13
 
