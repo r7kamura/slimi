@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Yet another implementation for Slim template language.'
   spec.homepage      = 'https://github.com/r7kamura/slimi'
   spec.license       = 'MIT'
-  spec.required_ruby_version = '>= 2.6.0'
+  spec.required_ruby_version = '>= 3.3'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage

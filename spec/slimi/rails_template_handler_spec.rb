@@ -31,7 +31,7 @@ RSpec.describe Slimi::RailsTemplateHandler do
         source,
         identifier,
         handler,
-        format: format,
+        format:,
         locals: {}
       )
     end

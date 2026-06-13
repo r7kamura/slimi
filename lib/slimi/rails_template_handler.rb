@@ -8,8 +8,8 @@ module Slimi
     # @return [String]
     def call(template, source = nil)
       Renderer.new(
-        source: source,
-        template: template
+        source:,
+        template:
       ).call
     end
 

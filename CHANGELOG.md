@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Change required Ruby version to 3.3 or later.
+
 ## 0.8.0 - 2026-06-13
 
 - Support splat attributes.

@@ -77,7 +77,7 @@ module Slimi
 
       class Builder
         # https://html.spec.whatwg.org/multipage/syntax.html#attributes-2
-        INVALID_ATTRIBUTE_NAME_REGEXP = %r{[ \0"'>/=]}.freeze
+        INVALID_ATTRIBUTE_NAME_REGEXP = %r{[ \0"'>/=]}
 
         # @param [Hash] options
         def initialize(options)
