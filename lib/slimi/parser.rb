@@ -139,7 +139,9 @@ module Slimi
         @stacks.last << tag
         @stacks.last << [:static, ' '] if with_trailing_white_space
 
-        if @scanner.skip(/[ \t]*(?=\R|$)/)
+        if @scanner.skip(/[ \t]*:[ \t]*/)
+          parse_block_expansion(tag)
+        elsif @scanner.skip(/[ \t]*(?=\R|$)/)
           content = [:multi]
           tag << content
           @stacks << content
@@ -164,6 +166,18 @@ module Slimi
       else
         false
       end
+    end
+
+    # Parse the tag after a colon as the only child of the tag before it.
+    #   e.g. li: a href="/" Home
+    # @param [Array] tag
+    def parse_block_expansion(tag)
+      content = [:multi]
+      tag << content
+      index = @stacks.size
+      @stacks << content
+      parse_tag_inner || syntax_error!(Errors::UnknownLineIndicatorError)
+      @stacks.delete_at(index)
     end
 
     # Parse tag name part.

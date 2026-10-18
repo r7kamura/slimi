@@ -114,6 +114,52 @@ RSpec.describe Slimi::Parser do
     end
     # rubocop:enable Layout/TrailingWhitespace
 
+    context 'with block expansion' do
+      let(:source) do
+        <<~SLIM
+          li: a b
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'li', %i[html attrs], [:multi, [:html, :tag, 'a', %i[html attrs], [:slimi, :text, :inline, [:multi, [:slimi, :interpolate, 6, 7, 'b']]]]]], [:newline]]
+        )
+      end
+    end
+
+    context 'with block expansion and multi-line attribute' do
+      let(:source) do
+        <<~SLIM
+          li: a{
+            href="c"
+          }
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'li', %i[html attrs], [:multi, [:newline], [:newline], [:html, :tag, 'a', [:html, :attrs, [:html, :attr, 'href', [:escape, true, [:slimi, :interpolate, 15, 16, 'c']]]], [:multi, [:newline]]]]]]
+        )
+      end
+    end
+
+    context 'with block expansion and nested lines' do
+      let(:source) do
+        <<~SLIM
+          ul
+            li: a
+              | b
+        SLIM
+      end
+
+      it 'returns expected s-expression' do
+        is_expected.to eq(
+          [:multi, [:html, :tag, 'ul', %i[html attrs], [:multi, [:newline], [:html, :tag, 'li', %i[html attrs], [:multi, [:html, :tag, 'a', %i[html attrs], [:multi, [:newline], [:slimi, :text, :verbatim, [:multi, [:slimi, :interpolate, 17, 18, 'b']]], [:newline]]]]]]]]
+        )
+      end
+    end
+
     context 'with HTML comment' do
       let(:source) do
         <<~SLIM
